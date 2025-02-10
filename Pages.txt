@@ -1,0 +1,8 @@
+http://127.0.0.1:8000/admin/courses/course/
+
+http://127.0.0.1:8000/
+
+
+cd course_comparison 
+
+python manage.py createsuperuser

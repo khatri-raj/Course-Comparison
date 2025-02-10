@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Course Comparison</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'courses/style.css' %}">
+    <script>
+        function sortCourses() {
+            let sortBy = document.getElementById("sort").value;
+            let courses = document.querySelectorAll(".course");
+
+            courses = Array.from(courses).sort((a, b) => {
+                let aValue = parseFloat(a.dataset[sortBy]);
+                let bValue = parseFloat(b.dataset[sortBy]);
+                if (sortBy === "fees") {
+                    return aValue - bValue;  // Ascending order
+                } else {
+                    return bValue - aValue;  // Descending order for placement & rating
+                }
+            });
+
+            let container = document.getElementById("courseContainer");
+            container.innerHTML = "";
+            courses.forEach(course => container.appendChild(course));
+        }
+    </script>
+</head>
+<body>
+   <div class="container">
+    <h1>Compare IT Courses in Pune</h1>
+    
+    <label>Sort by:</label>
+    <select id="sort" onchange="sortCourses()">
+        <option value="fees">Fees (Low to High)</option>
+        <option value="placement">Placement Rate (High to Low)</option>
+        <option value="rating">Rating (High to Low)</option>
+    </select>
+
+    <div id="courseContainer">
+        {% for course in courses %}
+            <div class="course" data-fees="{{ course.Fees }}" data-placement="{{ course.Placement_rate }}" data-rating="{{ course.Rating }}">
+                <h2>{{ course.Name }}</h2>
+                <p>Institute : {{ course.Institute }}</p>
+                <p>Fees : ₹{{ course.Fees }}</p>
+                <p>Placement Rate : {{ course.Placement_rate }}%</p>
+                <p>Rating : ⭐{{ course.Rating }}</p>
+                <p>Link: <a href="https://www.google.com/search?q={{ course.Name|urlencode }}+{{ course.Institute|urlencode }}" target="_blank">Search Course</a></p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

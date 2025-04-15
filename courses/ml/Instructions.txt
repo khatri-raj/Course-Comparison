@@ -1,0 +1,4 @@
+$ pip install pandas scikit-learn joblib
+python manage.py shell
+>>> from courses.ml.ml_model import train_models
+>>> train_models()

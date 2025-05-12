@@ -3,7 +3,25 @@
 <html lang="en">
 <head>
     <title>Course Comparison</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'courses/style.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-image: url('https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-ec18-61f7-9480-f5c9654cc873/raw?se=2025-05-12T13%3A45%3A18Z&sp=r&sv=2024-08-04&sr=b&scid=00000000-0000-0000-0000-000000000000&skoid=04233560-0ad7-493e-8bf0-1347c317d021&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-12T12%3A11%3A17Z&ske=2025-05-13T12%3A11%3A17Z&sks=b&skv=2024-08-04&sig=Be1objsPZdwhCJJyezwLvaRUrbbs4NPMpc/5rQxEEaQ%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .backdrop {
+            background-color: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(1px);
+            border-radius: 15px;
+        }
+    </style>
+
     <script>
         function sortCourses() {
             let sortBy = document.getElementById("sort").value;
@@ -12,11 +30,7 @@
             courses = Array.from(courses).sort((a, b) => {
                 let aValue = parseFloat(a.dataset[sortBy]);
                 let bValue = parseFloat(b.dataset[sortBy]);
-                if (sortBy === "fees") {
-                    return aValue - bValue;  // Ascending order
-                } else {
-                    return bValue - aValue;  // Descending order for placement & rating
-                }
+                return sortBy === "fees" ? aValue - bValue : bValue - aValue;
             });
 
             let container = document.getElementById("courseContainer");
@@ -26,28 +40,68 @@
     </script>
 </head>
 <body>
-   <div class="container">
-    <h1>Compare IT Courses in Pune</h1>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+        <a class="navbar-brand" href="{% url 'home' %}">Course Comparison</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
     
-    <label>Sort by:</label>
-    <select id="sort" onchange="sortCourses()">
-        <option value="fees">Fees (Low to High)</option>
-        <option value="placement">Placement Rate (High to Low)</option>
-        <option value="rating">Rating (High to Low)</option>
-    </select>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/Compare/' %}active{% endif %}" href="{% url 'course_list' %}">Compare</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/review' %}active{% endif %}" href="{% url 'review' %}">Reviews</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/contact' %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/help' %}active{% endif %}" href="{% url 'help' %}">Help</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+<div class="container py-5 backdrop my-5">
+    <h1 class="text-center mb-4">Compare IT Courses in Pune</h1>
 
-    <div id="courseContainer">
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-6">
+            <label for="sort" class="form-label">Sort by:</label>
+            <select id="sort" class="form-select" onchange="sortCourses()">
+                <option value="fees">Fees (Low to High)</option>
+                <option value="placement">Placement Rate (High to Low)</option>
+                <option value="rating">Rating (High to Low)</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="courseContainer" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for course in courses %}
-            <div class="course" data-fees="{{ course.Fees }}" data-placement="{{ course.Placement_rate }}" data-rating="{{ course.Rating }}">
-                <h2>{{ course.Name }}</h2>
-                <p>Institute : {{ course.Institute }}</p>
-                <p>Fees : ₹{{ course.Fees }}</p>
-                <p>Placement Rate : {{ course.Placement_rate }}%</p>
-                <p>Rating : ⭐{{ course.Rating }}</p>
-                <p>Link: <a href="https://www.google.com/search?q={{ course.Name|urlencode }}+{{ course.Institute|urlencode }}" target="_blank">Search Course</a></p>
+        <div class="col">
+            <div class="card h-100 course" data-fees="{{ course.Fees }}" data-placement="{{ course.Placement_rate }}" data-rating="{{ course.Rating }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.Name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ course.Institute }}</h6>
+                    <ul class="list-group list-group-flush my-3">
+                        <li class="list-group-item">💰 Fees: ₹{{ course.Fees }}</li>
+                        <li class="list-group-item">📈 Placement Rate: {{ course.Placement_rate }}%</li>
+                        <li class="list-group-item">⭐ Rating: {{ course.Rating }}</li>
+                    </ul>
+                    <a href="https://www.google.com/search?q={{ course.Name|urlencode }}+{{ course.Institute|urlencode }}" class="btn btn-primary w-100" target="_blank">Search Course</a>
+                </div>
             </div>
+        </div>
         {% endfor %}
     </div>
 </div>
+
+<!-- Bootstrap Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

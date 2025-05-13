@@ -60,5 +60,4 @@ def train_models():
     # Save the model and scaler
     joblib.dump(best_model, "courses/ml/best_model.pkl")
     joblib.dump(scaler, "courses/ml/scaler.pkl")
-
     print("✅ Best model saved successfully.")

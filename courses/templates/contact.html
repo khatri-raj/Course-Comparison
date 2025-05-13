@@ -1,13 +1,12 @@
 {% load static %}
+{% load widget_tweaks %} <!-- Needed for add_class -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Course Comparison</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <style>
         body {
             background-image: url("{% static 'images/your_background_image.jpg' %}");
@@ -26,35 +25,84 @@
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3 shadow-sm">
     <a class="navbar-brand" href="{% url 'home' %}">Course Comparison</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if request.path == '/Compare/' %}active{% endif %}" href="{% url 'course_list' %}">Compare</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if request.path == '/review' %}active{% endif %}" href="{% url 'review' %}">Reviews</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if request.path == '/contact' %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if request.path == '/help' %}active{% endif %}" href="{% url 'help' %}">Help</a>
-            </li>
+            <li class="nav-item"><a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.path == '/Compare/' %}active{% endif %}" href="{% url 'course_list' %}">Compare</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.path == '/review' %}active{% endif %}" href="{% url 'review' %}">Reviews</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.path == '/contact' %}active{% endif %}" href="{% url 'contact' %}">Contact</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.path == '/help' %}active{% endif %}" href="{% url 'help' %}">Help</a></li>
         </ul>
     </div>
 </nav>
 
+<!-- Contact Page -->
+<div class="container py-5">
+    <h2 class="text-center mb-4">Contact Us</h2>
+    <div class="row g-4">
 
-<!-- Bootstrap JS -->
+        <!-- Contact Form (POST to same view) -->
+        <div class="col-md-6">
+            <div class="backdrop">
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+                    {% if success %}
+                        <div class="alert alert-success">Your message has been sent successfully!</div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="id_name" class="form-label">Your Name</label>
+                        {{ form.name|add_class:"form-control" }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label">Your Email</label>
+                        {{ form.email|add_class:"form-control" }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_subject" class="form-label">Subject</label>
+                        {{ form.subject|add_class:"form-control" }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_message" class="form-label">Message</label>
+                        {{ form.message|add_class:"form-control" }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Send Message</button>
+                </form>
+            </div>
+        </div>
+
+            <!-- Display Contact Info Manually -->
+<div class="col-md-6">
+    <div class="backdrop">
+        <div class="bg-light p-4 rounded shadow-sm mb-4">
+            <h5>Reach Us At:</h5>
+            <p><strong>Email:</strong> support@coursecomparison.com</p>
+            <p><strong>Phone:</strong> +91 82628-13490</p>
+            <p><strong>Address:</strong> 123 Course Comparison Street, City, Country</p>
+
+            <div class="mt-3">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.3854352690837!2d-122.4194150846819!3d37.77492917975961!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808581f94b0b6367%3A0x5f7b6a4f8d62933e!2sSan+Francisco%2C+CA!5e0!3m2!1sen!2sus!4v1621950677640!5m2!1sen!2sus"
+                    width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy">
+                </iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

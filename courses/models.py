@@ -21,3 +21,13 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.subject or 'No Subject'}"
+    
+
+class Review(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    rating = models.FloatField()  
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review for {self.course.Name} by {self.rating} stars"

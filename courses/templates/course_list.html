@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Course Comparison</title>
+    <title>Compare Courses</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap 5 -->
@@ -26,13 +26,20 @@
         function sortCourses() {
             let sortBy = document.getElementById("sort").value;
             let courses = document.querySelectorAll(".course");
-
+        
             courses = Array.from(courses).sort((a, b) => {
                 let aValue = parseFloat(a.dataset[sortBy]);
                 let bValue = parseFloat(b.dataset[sortBy]);
-                return sortBy === "fees" ? aValue - bValue : bValue - aValue;
+        
+                // For sorting by fees (low to high), the logic stays the same
+                if (sortBy === "fees") {
+                    return aValue - bValue;
+                }
+                
+                // For sorting by placement and rating (high to low)
+                return bValue - aValue;
             });
-
+        
             let container = document.getElementById("courseContainer");
             container.innerHTML = "";
             courses.forEach(course => container.appendChild(course));

@@ -1,69 +1,14 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Course Comparison</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <style>
-        body {
-            background-image: url("{% static 'images/your_background_image.jpg' %}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-        .backdrop {
-            background-color: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(6px);
-            border-radius: 15px;
-            padding: 40px;
-        }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
-    <a class="navbar-brand" href="{% url 'home' %}">Course Comparison</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+{% block title %}Home - Course Comparison{% endblock %}
 
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if request.path == '/Compare/' %}active{% endif %}" href="{% url 'course_list' %}">Compare</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if request.path == '/review' %}active{% endif %}" href="{% url 'review' %}">Reviews</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if request.path == '/contact' %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if request.path == '/help' %}active{% endif %}" href="{% url 'help' %}">Help</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+{% block content %}
 
-
-<!-- Hero Section -->
-<div class="container my-5">
-    <div class="backdrop text-center">
-        <h1 class="display-4 fw-bold">Welcome to Course Comparison</h1>
-        <p class="lead mt-3">Easily compare IT courses in Pune based on fees, ratings, placement, and more.</p>
-        <a href="{% url 'course_list' %}" class="btn btn-primary btn-lg mt-4">Start Comparing</a>
+<div class="hero-section">
+    <div class="backdrop animate__animated animate__fadeInUp text-center">
+        <h1 class="display-4 fw-bold">Find Your Ideal IT Course</h1>
+        <p class="lead mt-3">Explore and compare top IT courses in Pune based on fees, ratings, placements, and more to kickstart your career.</p>
+        <a href="{% url 'course_list' %}" class="btn btn-primary btn-lg mt-4 animate__animated animate__pulse animate__infinite">Compare Courses Now</a>
     </div>
 </div>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock %}

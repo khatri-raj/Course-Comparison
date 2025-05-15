@@ -77,12 +77,12 @@ WSGI_APPLICATION = 'course_comparison.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Use MySQL as the engine
-        'NAME': 'Course_Compare',      # Your MySQL database name
-        'USER': 'root',         # Your MySQL username
-        'PASSWORD': 'Khatri@25',     # Your MySQL password
-        'HOST': 'localhost',                   # For local MySQL, use 'localhost'
-        'PORT': '3306',                        # MySQL default port
+        'ENGINE': 'django.db.backends.mysql',  
+        'NAME': 'Course_Compare',      
+        'USER': 'root',       
+        'PASSWORD': 'Khatri@25',    
+        'HOST': 'localhost',                  
+        'PORT': '3306',                    
     }
 }
 

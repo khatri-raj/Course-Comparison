@@ -11,13 +11,32 @@ Many students struggle to find the best courses and institutes in Pune. To simpl
 ## 📸 Screenshots
 
 ### 🏠 Home Page  
-![Home Page](screenshots/home.png)
+![Home Page](Screenshots/Home.png)
 
 ### 📊 Comparison Page  
-![Compare Courses](screenshots/compare.png)
+![Compare Courses](Screenshots/Compare.png)
+
+### 🗣️ Reviews Page  
+![Reviews](Screenshots/Reviews.png)
+
+### 📝 Submit Review Form  
+![Review Form](Screenshots/ReviewForm.png)
 
 ### ✉️ Contact Form  
-![Contact Form](screenshots/contact.png)
+![Contact Form](Screenshots/Contact.png)
+
+### ❓ Help / FAQ Page  
+![Help](Screenshots/Help.png)
+
+### 🎓 Courses Administration Panel  
+![Courses Administration](Screenshots/Courses_Administration.png)
+
+### 🧾 Review Administration Panel  
+![Review Administration](Screenshots/Review_Administration.png)
+
+### 📬 Enquiry Administration Panel  
+![Enquiry Administration](Screenshots/Enquiry_Administration.png)
+
 
 ---
 

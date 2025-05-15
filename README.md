@@ -11,7 +11,7 @@ Many students struggle to find the best courses and institutes in Pune. To simpl
 ## 📸 Screenshots
 
 ### 🏠 Home Page  
-![Home Page](screenshots/home.png)
+![Home Page](Screenshots/Home.png)
 
 ### 📊 Comparison Page  
 ![Compare Courses](screenshots/compare.png)

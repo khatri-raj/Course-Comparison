@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Course Compare{% endblock %}
+
+{% block content %}
+<section class="section py-5" style="background-color: #f4f7ff;">
+  <div class="container d-flex justify-content-center">
+    <div class="card shadow border-0 rounded-4 p-4" style="width: 100%; max-width: 500px;">
+      <div class="card-body">
+        <h2 class="text-center mb-4 text-primary fw-bold" style="color: #4e54c8 !important;">Login to Your Account</h2>
+        
+        {% if messages %}
+          <div class="mb-4">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="POST" action="" autocomplete="off">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="username" class="form-label fw-semibold text-dark">Username</label>
+            <input type="text"
+                   class="form-control form-control-lg rounded-3 shadow-sm"
+                   id="username"
+                   name="username"
+                   placeholder="Enter your username"
+                   required
+                   autocomplete="off">
+          </div>
+          <div class="mb-4">
+            <label for="password" class="form-label fw-semibold text-dark">Password</label>
+            <input type="password"
+                   class="form-control form-control-lg rounded-3 shadow-sm"
+                   id="password"
+                   name="password"
+                   placeholder="Enter your password"
+                   required
+                   autocomplete="new-password">
+          </div>
+        
+          <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-semibold">Login</button>
+        </form>
+
+        <p class="text-center mt-3 mb-0 text-muted">
+          Don't have an account?
+          <a href="{% url 'register' %}" class="text-primary fw-medium text-decoration-none" style="color: #4e54c8 !important;">Register here</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-control {
+    border-color: #ced4da;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .form-control:focus {
+    border-color: #4e54c8;
+    box-shadow: 0 0 0 0.25rem rgba(78, 84, 200, 0.25);
+  }
+
+  .btn-primary {
+    background-color: #4e54c8;
+    border-color: #4e54c8;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: #3b46a8;
+    border-color: #3b46a8;
+    transform: scale(1.05);
+  }
+
+  .alert {
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .btn-primary {
+      padding: 0.75rem;
+    }
+  }
+</style>
+{% endblock %}

@@ -34,7 +34,6 @@ Many students struggle to find the best courses and institutes in Pune. To simpl
 ### 🏠 🧑‍💻 Register Page  
 ![Register Page](Screenshots/Register.png)
 
-
 ### 🎓 Courses Administration Panel  
 ![Courses Administration](Screenshots/Courses_Administration.png)
 

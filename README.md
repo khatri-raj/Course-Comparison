@@ -19,7 +19,7 @@ Many students struggle to find the best courses and institutes in Pune. To simpl
 ### 🗣️ Reviews Page  
 ![Reviews](Screenshots/Reviews.png)
 
-### 📝 Submit Review Form  
+### 📝 Submit Review Form  (Login Required)
 ![Review Form](Screenshots/ReviewForm.png)
 
 ### ✉️ Contact Form  
@@ -51,8 +51,10 @@ Many students struggle to find the best courses and institutes in Pune. To simpl
 - 🔎 **Course Search & Filter**
 - 📊 **Compare Multiple Courses**
 - ⭐ **View Ratings & Reviews**
-- 📝 **Submit Feedback or Inquiries**
-- 🔐 **Admin Dashboard (Django)**
+- 📝 **Register and Login to Submit Reviews**
+- ✉️ **Contact Form for Inquiries**
+- 🔐 **Secure Login, Logout, and Signup System**
+- 🛡️ **Admin Dashboard (Django) for Managing Data**
 
 ---
 

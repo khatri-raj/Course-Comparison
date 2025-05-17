@@ -149,6 +149,21 @@
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == '/help' %}active{% endif %}" href="{% url 'help' %}">Help</a>
                     </li>
+                    {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <span class="nav-link text-white">Welcome, {{ request.user.username }}</span>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-outline-light ms-2" href="{% url 'logout' %}">Logout</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="btn btn-outline-light ms-2" href="{% url 'login' %}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-outline-light ms-2" href="{% url 'register' %}">Register</a>
+          </li>
+          {% endif %}
                 </ul>
             </div>
         </div>

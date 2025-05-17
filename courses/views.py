@@ -13,35 +13,42 @@ def course_list(request):
     courses = Course.objects.all()
     return render(request, 'course_list.html', {'courses': courses})
 
-@login_required
 def contact(request):
+    form = ContactMessageForm()
+
     if request.method == 'POST':
-        form = ContactMessageForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return render(request, 'contact.html', {
-                'form': ContactMessageForm(),
-                'success': True
-            })
-    else:
-        form = ContactMessageForm()
-    
+        if not request.user.is_authenticated:
+            messages.warning(request, "You must be logged in to submit the form.")
+            return render(request, 'contact.html', {'form': form})
+        else:
+            form = ContactMessageForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Your message has been sent successfully!")
+                form = ContactMessageForm()  # Reset form after successful submission
+                return render(request, 'contact.html', {'form': form, 'success': True})
+            else:
+                # Optional: print errors to console for debugging
+                print(form.errors)
+
     return render(request, 'contact.html', {'form': form})
 
 def help(request):
     return render(request, 'help.html')
 
-@login_required
 def reviews_list(request):
-    # Show review submission form
     courses = Course.objects.all()
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.warning(request, "You must be logged in to submit a review.")
+            return redirect('reviews_list')  # Stay on same page
         course_id = request.POST.get('course')
         rating = float(request.POST.get('rating'))
         comment = request.POST.get('comment')
         course = Course.objects.get(id=course_id)
         Review.objects.create(course=course, rating=rating, comment=comment)
-        return redirect('reviews_list')  # Redirect to review list after submission
+        messages.success(request, "Review added successfully!")
+        return redirect('reviews_list')
     return render(request, 'reviews_list.html', {'courses': courses})
 
 def review(request):

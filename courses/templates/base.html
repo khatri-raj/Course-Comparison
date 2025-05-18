@@ -138,6 +138,9 @@
                         <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/show_courses/' %}active{% endif %}" href="{% url 'show_courses' %}">ShowCourses</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {% if request.path == '/Compare/' %}active{% endif %}" href="{% url 'course_list' %}">Compare</a>
                     </li>
                     <li class="nav-item">

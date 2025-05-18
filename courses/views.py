@@ -7,8 +7,14 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib.auth.decorators import login_required
 
 def home(request):
-    return render(request, 'home.html')
+    top_courses = Course.objects.order_by('-Rating')[:3]
+    return render(request, 'home.html', {'top_courses': top_courses})
 
+def show_courses(request):
+    courses = Course.objects.all()
+    return render(request, 'show_courses.html', {'courses': courses})
+
+@login_required
 def course_list(request):
     courses = Course.objects.all()
     return render(request, 'course_list.html', {'courses': courses})

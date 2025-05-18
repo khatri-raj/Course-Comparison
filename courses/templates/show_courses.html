@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}All Courses{% endblock %}
+
+{% block content %}
+<style>
+    .course-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    }
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .course-title {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+    .institute {
+        color: #6c757d;
+        font-style: italic;
+    }
+    .badge-success {
+        background-color: #28a745;
+    }
+    .syllabus {
+        max-height: 100px;
+        overflow-y: auto;
+        font-size: 0.9rem;
+        color: #495057;
+    }
+    .info-label {
+        color: #17a2b8;
+        font-weight: 500;
+    }
+    .container {
+        padding-bottom: 50px;
+    }
+    @media (max-width: 768px) {
+        .course-card {
+            margin-bottom: 20px;
+        }
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-5 fw-bold" style="color: #343a40; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+        Explore Our Courses
+    </h2>
+    <div class="row">
+        {% for course in courses %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card course-card shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="course-title mb-3">{{ course.Name }}</h4>
+                    <h6 class="institute mb-3">{{ course.Institute }}</h6>
+                    <p class="mb-2"><span class="info-label">Fees:</span> ₹{{ course.Fees|floatformat:0 }}</p>
+                    <p class="mb-2"><span class="info-label">Duration:</span> {{ course.Duration }}</p>
+                    <p class="mb-2">
+                        <span class="info-label">Placement Rate:</span> 
+                        <span class="badge badge-success">{{ course.Placement_rate }}%</span>
+                    </p>
+                    <p class="mb-3">
+                        <span class="info-label">Rating:</span> 
+                        {% for i in "12345" %}
+                            <i class="fas fa-star {% if forloop.counter <= course.Rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                        {% endfor %}
+                    </p>
+                    <div class="syllabus p-3 bg-light rounded">
+                        <strong class="info-label">Syllabus:</strong><br>
+                        {{ course.Syllabus|linebreaks }}
+                    </div>
+                    <a href="{% url 'review'%}" class="btn btn-outline-primary btn-sm mt-3 w-100">See Reviews</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted fs-4">No courses available at the moment.</p>
+            <a href="#" class="btn btn-primary">Check Back Later</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Include Font Awesome for star icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

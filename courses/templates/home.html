@@ -3,12 +3,170 @@
 {% block title %}Home - Course Comparison{% endblock %}
 
 {% block content %}
+<style>
+    /* Hero Section Styling */
+    .hero-section {
+        background: linear-gradient(to right, #0d47a1 0%, #42a5f5 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 6rem 2rem;
+        border-radius: 20px;
+        margin: 2rem auto;
+        max-width: 100%;
+        text-align: center;
+        color: #fff;
+    }
 
-<div class="hero-section">
-    <div class="backdrop animate__animated animate__fadeInUp text-center">
-        <h1 class="display-4 fw-bold">Find Your Ideal IT Course</h1>
-        <p class="lead mt-3">Explore and compare top IT courses in Pune based on fees, ratings, placements, and more to kickstart your career.</p>
-        <a href="{% url 'course_list' %}" class="btn btn-primary btn-lg mt-4 animate__animated animate__pulse animate__infinite">Compare Courses Now</a>
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.05));
+        z-index: 0;
+    }
+
+    .hero-section > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .hero-lead {
+        font-size: 1.25rem;
+        max-width: 80%;
+        margin: 0 auto;
+        line-height: 1.7;
+        color: #f0f0f0;
+    }
+
+    .hero-btn {
+        background: #fff;
+        color: #0d47a1;
+        border: none;
+        padding: 0.85rem 2.2rem;
+        font-size: 1.125rem;
+        font-weight: 700;
+        border-radius: 50px;
+        transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+    }
+
+    .hero-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        background-color: #bbdefb;
+    }
+
+    /* Top Courses Styling */
+    .top-courses {
+        background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+        padding: 5rem 0;
+    }
+    .course-card {
+        border-radius: 15px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        background: #fff;
+    }
+    .course-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2) !important;
+    }
+    .course-card .card-body {
+        padding: 1.5rem;
+    }
+    .course-card .card-title {
+        font-size: 1.5rem;
+        color: #343a40;
+    }
+    .course-card .badge {
+        font-size: 0.9rem;
+    }
+    .course-btn {
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    .course-btn:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: #ffffff;
+        border-top: 1px solid #dee2e6;
+        padding: 4rem 0;
+    }
+    .cta-btn {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Heading Hover */
+    .section-title:hover {
+        color: #007bff;
+        transform: scale(1.02);
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container animate__animated animate__fadeIn">
+        <h1 class="hero-title mb-3">Find Your Ideal IT Course</h1>
+        <p class="hero-lead mb-4">
+            Explore and compare top IT courses in Pune based on fees, ratings, placements, and more to kickstart your career.
+        </p>
+        <a href="{% url 'course_list' %}" class="hero-btn btn mt-3 animate__animated animate__pulse animate__infinite">
+            Compare Courses Now
+        </a>
     </div>
-</div>
+</section>
+
+<!-- Top 3 Courses Section -->
+<section class="top-courses">
+    <div class="container">
+        <h2 class="section-title text-center fw-bold mb-5 animate__animated animate__fadeIn">Top 3 IT Courses of All Time</h2>
+        <div class="row g-4">
+            {% for course in top_courses %}
+            <div class="col-md-4">
+                <div class="course-card card h-100 shadow-sm border-0 animate__animated animate__fadeInUp">
+                    <div class="card-body">
+                        <h3 class="card-title fw-bold">{{ course.Name }}</h3>
+                        <p class="text-muted mb-2">{{ course.Institute }}</p>
+                        <span class="badge bg-success mb-3">Rating: {{ course.Rating }}/5</span>
+                        <p class="card-text">
+                            <i class="bi bi-currency-rupee me-1"></i><strong>Fees:</strong> ₹{{ course.Fees }}<br>
+                            <i class="bi bi-clock me-1"></i><strong>Duration:</strong> {{ course.Duration }}<br>
+                            <i class="bi bi-briefcase me-1"></i><strong>Placement Rate:</strong> {{ course.Placement_rate }}%
+                        </p>
+                        {% comment %} <a href="{% url 'course_detail' course.id %}" class="course-btn btn btn-primary">View Details</a> {% endcomment %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No courses available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section text-center">
+    <div class="container">
+        <h3 class="section-title fw-bold mb-3 animate__animated animate__fadeIn">Ready to Start Your Journey?</h3>
+        <p class="lead mb-4">Join thousands of students who found their dream course with us.</p>
+        <a href="{% url 'course_list' %}" class="cta-btn btn btn-primary btn-lg">Compare All Courses</a>
+    </div>
+</section>
 {% endblock %}

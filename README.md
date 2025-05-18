@@ -50,15 +50,16 @@ Many students struggle to find the best courses and institutes in Pune. To simpl
 
 ---
 
-## 🔍 Features
+🔍 Features
+- 🔎 Course Search & Filter – Easily search and filter courses by name, fees, ratings, and more.
+- 📊 Compare Multiple Courses – Side-by-side comparison to help students choose the best institute.
+- ⭐ View Ratings & Reviews – See honest feedback from other users to make informed decisions.
+- 📝 Register and Login to Submit Reviews – Only logged-in users can submit reviews, ensuring accountability.
+- ✉️ Contact Form for Inquiries – Reach out directly for any questions or guidance.
+- 🔐 Secure Login, Logout, and Signup System – Built-in authentication with session management.
+- 🛡️ Admin Dashboard (Django) – Full admin control for managing courses, reviews, and inquiries.
 
-- 🔎 **Course Search & Filter**
-- 📊 **Compare Multiple Courses**
-- ⭐ **View Ratings & Reviews**
-- 📝 **Register and Login to Submit Reviews**
-- ✉️ **Contact Form for Inquiries**
-- 🔐 **Secure Login, Logout, and Signup System**
-- 🛡️ **Admin Dashboard (Django) for Managing Data**
+
 
 ---
 
@@ -133,8 +134,7 @@ pytz
 sqlparse
 asgiref
 
-🤝 Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you'd like to change or improve.
+👨‍💻 Built 100% by me – from backend models to frontend UI and deployment setup.
 
 📫 Contact
 Name: Raj Khatri

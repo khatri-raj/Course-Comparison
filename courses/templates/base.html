@@ -157,6 +157,9 @@
             <span class="nav-link text-white">Welcome, {{ request.user.username }}</span>
           </li>
           <li class="nav-item">
+            <a class="btn btn-outline-light ms-2" href="{% url 'dashboard'%}">dashboard</a>
+          </li>
+          <li class="nav-item">
             <a class="btn btn-outline-light ms-2" href="{% url 'logout' %}">Logout</a>
           </li>
           {% else %}

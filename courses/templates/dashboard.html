@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="user-info mb-4 p-3 rounded bg-light shadow-sm text-center">
+        <h4>Welcome, <span class="text-primary">{{ user.username }}</span>!</h4>
+        <p class="mb-0 text-muted">{{ user.email }}</p>
+    </div>
+
+    {% if messages %}
+<div id="message-container" class="mb-4">
+    {% for message in messages %}
+    <div class="alert alert-success text-center" id="success-message">{{ message }}</div>
+    {% endfor %}
+</div>
+
+<script>
+    setTimeout(() => {
+        const msgContainer = document.getElementById('message-container');
+        if (msgContainer) {
+            msgContainer.style.opacity = '0';
+            msgContainer.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                msgContainer.remove();
+            }, 500);
+        }
+    }, 1500);
+</script>
+{% endif %}
+
+    <h2 class="mb-5 text-center fw-bold text-dark">My Saved Courses</h2>
+
+    {% if saved_courses %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for saved in saved_courses %}
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm transition hover-shadow">
+                    <div class="card-body p-4">
+                        <h5 class="card-title fw-bold text-dark mb-2">{{ saved.course.Name }}</h5>
+                        <h6 class="card-subtitle mb-3 text-muted">{{ saved.course.Institute }}</h6>
+                        <ul class="list-group list-group-flush my-3 bg-light rounded">
+                            <li class="list-group-item bg-transparent py-2">💰 <span class="fw-semibold">Fees:</span> ₹{{ saved.course.Fees }}</li>
+                            <li class="list-group-item bg-transparent py-2">⏳ <span class="fw-semibold">Duration:</span> {{ saved.course.Duration }}</li>
+                            <li class="list-group-item bg-transparent py-2">📈 <span class="fw-semibold">Placement Rate:</span> {{ saved.course.Placement_rate }}%</li>
+                            <li class="list-group-item bg-transparent py-2">⭐ <span class="fw-semibold">Rating:</span> {{ saved.course.Rating }}</li>
+                            <li class="list-group-item bg-transparent py-2">
+                                <span class="fw-semibold">Syllabus:</span><br>
+                                <span class="text-muted">{{ saved.course.Syllabus|linebreaksbr }}</span>
+                            </li>
+                        </ul>
+
+                        <a href="{% url 'show_courses' %}" class="btn btn-primary w-100 mb-2 fw-medium">Browse More Courses</a>
+
+                        <form method="post" action="{% url 'remove_saved_course' saved.course.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger w-100 fw-medium">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <p class="fs-4 text-muted mb-4">You have no saved courses yet.</p>
+            <a href="{% url 'show_courses' %}" class="btn btn-primary btn-lg fw-medium px-4">Explore Courses</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+    }
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
+    .btn-outline-danger {
+        border-width: 2px;
+    }
+    .list-group-item {
+        border: none;
+    }
+</style>
+{% endblock %}

@@ -1,6 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container py-5 backdrop my-5">
+    {% if messages %}
+<div id="message-container" class="mb-4">
+    {% for message in messages %}
+    <div class="alert alert-success text-center" id="success-message">{{ message }}</div>
+    {% endfor %}
+</div>
+
+<script>
+    setTimeout(() => {
+        const msgContainer = document.getElementById('message-container');
+        if (msgContainer) {
+            msgContainer.style.opacity = '0';  // fade out
+            msgContainer.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                msgContainer.remove(); // remove from DOM after fade
+            }, 500);
+        }
+    }, 1500);
+</script>
+{% endif %}
+
     <h1 class="text-center mb-4">Compare IT Courses in Pune</h1>
 
     <div class="row justify-content-center mb-4">
@@ -26,7 +47,8 @@
                         <li class="list-group-item">📈 Placement Rate: {{ course.Placement_rate }}%</li>
                         <li class="list-group-item">⭐ Rating: {{ course.Rating }}</li>
                     </ul>
-                    <a href="https://www.google.com/search?q={{ course.Name|urlencode }}+{{ course.Institute|urlencode }}" class="btn btn-primary w-100" target="_blank">Search Course</a>
+                    <a href="https://www.google.com/search?q={{ course.Institute|urlencode }}" class="btn btn-primary w-100" target="_blank">Search Course</a>
+                    <a href="{% url 'save_course' course.id %}" class="btn btn-save-dashboard w-100 mt-2">💾 Save to Dashboard</a>
                 </div>
             </div>
         </div>
@@ -54,4 +76,19 @@
         courses.forEach(course => container.appendChild(course));
     }
 </script>
+<style>
+    /* Make the "Save to Dashboard" button match the card background */
+    .btn-save-dashboard {
+      background-color: #f8f9fa; /* Bootstrap card background */
+      color: #212529; /* Default text color */
+      border: none;
+      box-shadow: none;
+    }
+  
+    /* Optional: on hover, a subtle effect */
+    .btn-save-dashboard:hover {
+      background-color: #e2e6ea; /* Slightly darker */
+      color: #212529;
+    }
+  </style>
 {% endblock %}

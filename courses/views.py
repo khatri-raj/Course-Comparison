@@ -5,6 +5,10 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from .models import SavedCourse
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
 
 def home(request):
     top_courses = Course.objects.order_by('-Rating')[:3]
@@ -109,3 +113,26 @@ def register(request):
         return redirect('login')
 
     return render(request, 'register.html')
+
+@login_required
+def save_course(request, course_id):
+    course = Course.objects.get(id=course_id)
+    saved, created = SavedCourse.objects.get_or_create(user=request.user, course=course)
+    if created:
+        messages.success(request, "Course saved to your dashboard!")
+    else:
+        messages.info(request, "Course already in your dashboard.")
+    return redirect('show_courses')  # or wherever the user came from
+
+@login_required
+def remove_saved_course(request, course_id):
+    if request.method == "POST":
+        saved_course = get_object_or_404(SavedCourse, user=request.user, course_id=course_id)
+        saved_course.delete()
+        messages.success(request, "Course removed from your dashboard.")
+    return redirect('dashboard')
+
+@login_required
+def dashboard(request):
+    saved_courses = SavedCourse.objects.filter(user=request.user).select_related('course')
+    return render(request, 'dashboard.html', {'saved_courses': saved_courses})

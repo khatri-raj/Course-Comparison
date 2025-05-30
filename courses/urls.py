@@ -16,5 +16,5 @@ urlpatterns = [
     path('save_course/<int:course_id>/', views.save_course, name='save_course'),
     path('remove_saved_course/<int:course_id>/', views.remove_saved_course, name='remove_saved_course'),
     path('dashboard/', views.dashboard, name='dashboard'),
-
+    path('profile/', views.profile_update, name='profile_update'),
 ]

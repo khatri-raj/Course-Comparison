@@ -8,7 +8,9 @@ from django.contrib.auth.decorators import login_required
 from .models import SavedCourse
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from .forms import UserUpdateForm, CustomPasswordChangeForm
 
 def home(request):
     top_courses = Course.objects.order_by('-Rating')[:3]
@@ -136,3 +138,38 @@ def remove_saved_course(request, course_id):
 def dashboard(request):
     saved_courses = SavedCourse.objects.filter(user=request.user).select_related('course')
     return render(request, 'dashboard.html', {'saved_courses': saved_courses})
+
+@login_required
+def profile_update(request):
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        password_form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+
+        # Validate username/email form first
+        if user_form.is_valid():
+            # If password fields were submitted, validate password form
+            if 'old_password' in request.POST and request.POST['old_password'].strip():
+                if password_form.is_valid():
+                    user_form.save()
+                    password_form.save()
+                    update_session_auth_hash(request, password_form.user)  # keep user logged in
+                    messages.success(request, "Profile and password updated successfully!")
+                    return redirect('profile_update')
+                else:
+                    messages.error(request, "Please correct the errors in the password form.")
+            else:
+                # No password change requested, just update username/email
+                user_form.save()
+                messages.success(request, "Profile updated successfully!")
+                return redirect('profile_update')
+        else:
+            messages.error(request, "Please correct the errors in the profile form.")
+
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        password_form = CustomPasswordChangeForm(user=request.user)
+
+    return render(request, 'profile_update.html', {
+        'user_form': user_form,
+        'password_form': password_form,
+    })

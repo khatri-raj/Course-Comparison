@@ -39,5 +39,8 @@ class UserUpdateForm(forms.ModelForm):
         return email
 
 class CustomPasswordChangeForm(PasswordChangeForm):
-    # You can add custom validation here if needed, or leave as is.
-    pass
+    def clean_new_password1(self):
+        password = self.cleaned_data.get('new_password1')
+        if password and len(password) < 8:
+            raise forms.ValidationError("Password must be at least 8 characters long.")
+        return password

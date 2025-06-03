@@ -26,13 +26,14 @@ class ContactMessage(models.Model):
 
 class Review(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    rating = models.FloatField()  
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Add user field
+    rating = models.FloatField()
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Review for {self.course.Name} by {self.rating} stars"
-    
+        return f"Review for {self.course.Name} by {self.user.username} - {self.rating} stars"
+     
 class SavedCourse(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)

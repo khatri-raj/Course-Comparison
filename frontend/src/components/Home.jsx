@@ -3,21 +3,18 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Slider from 'react-slick';
 import { AuthContext } from '../context/AuthContext';
-import { FaSearch, FaGraduationCap, FaQuoteLeft, FaRocket, FaStar } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { FaStar, FaGraduationCap, FaQuoteLeft, FaRocket } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const heroBackground = 'https://source.unsplash.com/1600x900/?education,learning';
+const heroBackground = 'https://source.unsplash.com/1920x1080/?education,learning';
 
 const Home = () => {
   const { isAuthenticated } = useContext(AuthContext);
   const [courses, setCourses] = useState([]);
   const [reviews, setReviews] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [category, setCategory] = useState('All');
   const [visibleCourses, setVisibleCourses] = useState(6);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchLoading, setSearchLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,6 +23,7 @@ const Home = () => {
           axios.get('http://localhost:8000/api/courses/'),
           axios.get('http://localhost:8000/api/reviews/'),
         ]);
+        console.log('Courses:', coursesResponse.data); // Debug log
         const sortedCourses = coursesResponse.data.sort((a, b) => b.Rating - a.Rating);
         const sortedReviews = reviewsResponse.data.sort((a, b) => b.rating - a.rating).slice(0, 3);
         setCourses(sortedCourses);
@@ -46,7 +44,7 @@ const Home = () => {
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000, // Slide every 1 second
+    autoplaySpeed: 3000,
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 2 } },
       { breakpoint: 600, settings: { slidesToShow: 1 } },
@@ -60,40 +58,35 @@ const Home = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2500, // Slide every 1 second
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    setSearchLoading(true);
-    setTimeout(() => setSearchLoading(false), 500);
-  };
-
-  const handleCategoryChange = (e) => {
-    setCategory(e.target.value);
-    setVisibleCourses(6);
+    autoplaySpeed: 2500,
   };
 
   const loadMoreCourses = () => {
     setVisibleCourses((prev) => prev + 6);
   };
 
-  const categories = ['All', ...new Set(courses.map((course) => course.category || 'General'))];
-
-  const filteredCourses = courses.filter((course) => {
-    const matchesSearch = course.Name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = category === 'All' || course.category === category;
-    return matchesSearch && matchesCategory;
-  });
+  const handleViewClick = (courseId) => {
+    console.log(`View Details clicked for course ID: ${courseId}`); // Debug log
+  };
 
   const heroVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: 'easeOut' } },
   };
 
   const cardVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: (i) => ({ opacity: 1, scale: 1, transition: { delay: i * 0.1, duration: 0.4 } }),
+    hidden: { opacity: 0, scale: 0.8, y: 30 },
+    visible: (i) => ({
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { delay: i * 0.15, duration: 0.5, ease: 'easeOut' },
+    }),
+  };
+
+  const buttonVariants = {
+    hover: { scale: 1.05, boxShadow: '0 6px 12px rgba(0, 0, 0, 0.15)' },
+    tap: { scale: 0.95 },
   };
 
   if (loading) {
@@ -134,42 +127,58 @@ const Home = () => {
         .hero-section {
           animation: gradientShift 15s ease infinite;
         }
-        .course-card, .top-card {
-          transition: all 0.3s ease;
+        .course-card, .top-card, .testimonial-card {
+          transition: all 0.4s ease;
+          position: relative;
+          overflow: hidden;
         }
-        .course-card:hover, .top-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        .course-card:hover, .top-card:hover, .testimonial-card:hover {
+          transform: translateY(-10px) scale(1.02);
+          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+          background-color: #f8fafc;
         }
         .course-image {
-          transition: filter 0.3s ease;
+          transition: transform 0.5s ease, filter 0.3s ease;
         }
         .course-card:hover .course-image, .top-card:hover .course-image {
-          filter: brightness(1.1);
+          transform: scale(1.1);
+          filter: brightness(1.15);
         }
-        .search-icon {
-          transition: color 0.3s ease;
-        }
-        .search-input:focus + .search-bar .search-icon {
-          color: #2563eb;
-        }
-        .category-select, .category-select option {
-          color: #1f2937 !important;
-          background: #ffffff;
-        }
-        .category-select:focus {
-          border-color: #2563eb;
-          box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
-        }
-        .primary-button, .top-button, .cta-button {
+        .primary-button, .top-button, .cta-button, .load-more-button {
           transition: all 0.3s ease;
         }
-        .primary-button:hover, .top-button:hover, .cta-button:hover {
+        .primary-button:hover, .top-button:hover, .cta-button:hover, .load-more-button:hover {
           background-color: #1d4ed8;
-          transform: scale(1.03);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .course-link {
+          transition: color 0.3s ease;
+        }
+        .course-link:hover {
+          color: #1d4ed8;
         }
         .course-link:hover .arrow {
-          transform: translateX(6px);
+          transform: translateX(8px);
+        }
+        .course-card::after, .top-card::after, .testimonial-card::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(45deg, rgba(37, 99, 235, 0.1), rgba(255, 255, 255, 0));
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          pointer-events: none; /* Ensure pseudo-element doesn't block clicks */
+        }
+        .course-card:hover::after, .top-card:hover::after, .testimonial-card:hover::after {
+          opacity: 1;
+        }
+        .top-button, .course-link {
+          position: relative;
+          z-index: 1; /* Ensure buttons are above pseudo-elements */
+          pointer-events: auto; /* Ensure buttons are clickable */
         }
       `}</style>
 
@@ -177,7 +186,7 @@ const Home = () => {
       <motion.header
         style={{
           ...styles.header,
-          backgroundImage: `linear-gradient(to right, rgba(37,99,235,0.5), rgba(31,41,55,0.7)), url(${heroBackground})`,
+          backgroundImage: `linear-gradient(to right, rgba(37,99,235,0.6), rgba(31,41,55,0.8)), url(${heroBackground})`,
         }}
         className="hero-section"
         initial="hidden"
@@ -199,25 +208,12 @@ const Home = () => {
           <motion.p style={styles.heroSubtitle} variants={heroVariants}>
             Discover top courses tailored to your goals with CourseComparison.
           </motion.p>
-          <motion.div style={styles.searchContainer} variants={heroVariants}>
-            <span style={styles.searchIcon} className="search-bar">
-              {searchLoading ? (
-                <div style={styles.searchSpinner}></div>
-              ) : (
-                <FaSearch style={styles.icon} className="search-icon" />
-              )}
-            </span>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              placeholder="Search courses..."
-              style={styles.searchInput}
-              className="search-input"
-            />
-          </motion.div>
           <motion.div style={styles.buttonGroup} variants={heroVariants}>
-            <Link to="/compare" style={styles.primaryButton} className="primary-button">
+            <Link
+              to="/compare"
+              style={styles.primaryButton}
+              className="primary-button"
+            >
               Explore Courses
             </Link>
           </motion.div>
@@ -237,12 +233,13 @@ const Home = () => {
               className="top-card"
               variants={cardVariants}
               custom={index}
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               <div
                 style={{
                   ...styles.courseImage,
-                  backgroundImage: `url(${course.image || 'https://source.unsplash.com/300x140/?course'})`,
+                  backgroundImage: `url(${course.image || 'https://source.unsplash.com/400x200/?course'})`,
                 }}
                 className="course-image"
               ></div>
@@ -253,7 +250,12 @@ const Home = () => {
                 <span style={styles.ratingEmptyStars}>{'★'.repeat(5 - Math.round(course.Rating))}</span>
                 <span style={styles.ratingText}>({course.Rating})</span>
               </div>
-              <Link to={`/courses/${course.id}`} style={styles.topButton} className="top-button">
+              <Link
+                to={`/course/${course.id}`}
+                style={styles.topButton}
+                className="top-button"
+                onClick={() => handleViewClick(course.id)}
+              >
                 View Details
               </Link>
             </motion.div>
@@ -266,27 +268,13 @@ const Home = () => {
         <h2 style={styles.sectionTitle}>
           <FaGraduationCap style={styles.icon} /> Featured Courses
         </h2>
-        <motion.div style={styles.categoryFilter} initial="hidden" animate="visible" variants={heroVariants}>
-          <select
-            value={category}
-            onChange={handleCategoryChange}
-            style={styles.categorySelect}
-            className="category-select"
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        </motion.div>
-        {filteredCourses.length === 0 ? (
+        {courses.length === 0 ? (
           <motion.p style={styles.noResults} initial="hidden" animate="visible" variants={heroVariants}>
-            No courses found. Try a different search or category.
+            No courses found.
           </motion.p>
         ) : (
           <Slider {...sliderSettings}>
-            {filteredCourses.slice(0, visibleCourses).map((course, index) => (
+            {courses.slice(0, visibleCourses).map((course, index) => (
               <motion.div
                 key={course.id}
                 style={styles.courseSlide}
@@ -299,7 +287,7 @@ const Home = () => {
                   <div
                     style={{
                       ...styles.courseImage,
-                      backgroundImage: `url(${course.image || 'https://source.unsplash.com/300x140/?course'})`,
+                      backgroundImage: `url(${course.image || 'https://source.unsplash.com/400x200/?course'})`,
                     }}
                     className="course-image"
                   ></div>
@@ -310,20 +298,27 @@ const Home = () => {
                     <span style={styles.ratingEmptyStars}>{'★'.repeat(5 - Math.round(course.Rating))}</span>
                     <span style={styles.ratingText}>({course.Rating})</span>
                   </div>
-                  <Link to={`/courses/${course.id}`} style={styles.courseLink} className="course-link">
-                    Explore <span style={styles.arrow}>→</span>
+                  <Link
+                    to={`/course/${course.id}`}
+                    style={styles.courseLink}
+                    className="course-link"
+                    onClick={() => handleViewClick(course.id)}
+                  >
+                    View Details <span style={styles.arrow}>→</span>
                   </Link>
                 </div>
               </motion.div>
             ))}
           </Slider>
         )}
-        {visibleCourses < filteredCourses.length && filteredCourses.length > 6 && (
+        {visibleCourses < courses.length && courses.length > 6 && (
           <motion.button
             onClick={loadMoreCourses}
             style={styles.loadMoreButton}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+            className="load-more-button"
+            whileHover="hover"
+            whileTap="tap"
+            variants={buttonVariants}
           >
             Load More
           </motion.button>
@@ -350,7 +345,7 @@ const Home = () => {
                 variants={cardVariants}
                 custom={index}
               >
-                <div style={styles.testimonialCard}>
+                <div style={styles.testimonialCard} className="testimonial-card">
                   <p style={styles.testimonialText}>"{review.comment}"</p>
                   <div style={styles.rating}>
                     <span style={styles.ratingStars}>{'★'.repeat(Math.round(review.rating))}</span>
@@ -373,7 +368,11 @@ const Home = () => {
           <FaRocket style={styles.icon} /> Start Learning Today
         </h2>
         <p style={styles.ctaText}>Join thousands of learners and achieve your goals.</p>
-        <Link to={isAuthenticated ? '/dashboard' : '/register'} style={styles.ctaButton} className="cta-button">
+        <Link
+          to={isAuthenticated ? '/dashboard' : '/register'}
+          style={styles.ctaButton}
+          className="cta-button"
+        >
           {isAuthenticated ? 'Go to Dashboard' : 'Get Started'}
         </Link>
       </motion.section>
@@ -390,35 +389,35 @@ const Home = () => {
 const styles = {
   container: {
     minHeight: '100vh',
-    background: '#f0f9ff',
+    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
     display: 'flex',
     flexDirection: 'column',
   },
   loadingContainer: {
     minHeight: '100vh',
-    background: '#f0f9ff',
+    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
-    gap: '12px',
+    gap: '16px',
   },
   spinner: {
-    width: '20px',
-    height: '20px',
-    border: '3px solid #2563eb',
-    borderTop: '3px solid transparent',
+    width: '32px',
+    height: '32px',
+    border: '4px solid #2563eb',
+    borderTop: '4px solid transparent',
     borderRadius: '50%',
     animation: 'spin 1s linear infinite',
   },
   loadingText: {
     color: '#1f2937',
     fontWeight: '600',
-    fontSize: '14px',
+    fontSize: '18px',
   },
   errorContainer: {
     minHeight: '100vh',
-    background: '#f0f9ff',
+    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -426,186 +425,144 @@ const styles = {
   errorText: {
     color: '#dc2626',
     fontWeight: '600',
-    fontSize: '14px',
+    fontSize: '18px',
   },
   header: {
     width: '100%',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    padding: '60px 0',
+    padding: '80px 0',
     position: 'relative',
+    minHeight: '200px',
   },
   headerContent: {
-    maxWidth: '1024px',
+    maxWidth: '1280px',
     margin: '0 auto',
-    padding: '0 16px',
+    padding: '0 24px',
     textAlign: 'center',
   },
   heroTitle: {
-    fontSize: '36px',
+    fontSize: '48px',
     fontWeight: '700',
     color: '#ffffff',
-    marginBottom: '12px',
+    marginBottom: '16px',
   },
   highlightText: {
     color: '#facc15',
   },
   heroSubtitle: {
-    fontSize: '18px',
+    fontSize: '24px',
     color: '#ffffff',
-    marginBottom: '20px',
-    maxWidth: '540px',
+    marginBottom: '32px',
+    maxWidth: '720px',
     marginLeft: 'auto',
     marginRight: 'auto',
-  },
-  searchContainer: {
-    maxWidth: '480px',
-    margin: '0 auto 20px',
-    display: 'flex',
-    alignItems: 'center',
-    background: '#ffffff',
-    borderRadius: '9999px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-    padding: '4px',
-  },
-  searchIcon: {
-    paddingLeft: '12px',
-    color: '#6b7280',
-  },
-  searchSpinner: {
-    width: '16px',
-    height: '16px',
-    border: '2px solid #2563eb',
-    borderTop: '2px solid transparent',
-    borderRadius: '50%',
-    animation: 'spin 1s linear infinite',
-  },
-  searchInput: {
-    width: '100%',
-    padding: '10px 12px',
-    borderRadius: '9999px',
-    border: 'none',
-    outline: 'none',
-    color: '#1f2937',
-    fontSize: '14px',
   },
   buttonGroup: {
     display: 'flex',
     justifyContent: 'center',
-    gap: '12px',
+    gap: '16px',
   },
   primaryButton: {
     background: '#2563eb',
     color: '#ffffff',
     fontWeight: '600',
-    padding: '10px 24px',
+    padding: '14px 32px',
     borderRadius: '9999px',
     textDecoration: 'none',
-  },
-  main: {
-    width: '100%',
-    flexGrow: 1,
-    padding: '40px 0',
+    fontSize: '18px',
+    display: 'inline-block',
   },
   section: {
-    maxWidth: '1024px',
-    margin: '0 auto 40px',
-    padding: '0 16px',
+    maxWidth: '1280px',
+    margin: '0 auto 48px',
+    padding: '0 24px',
   },
   sectionTitle: {
-    fontSize: '24px',
+    fontSize: '32px',
     fontWeight: '600',
     color: '#1f2937',
-    marginBottom: '20px',
+    marginBottom: '24px',
     textAlign: 'center',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '8px',
+    gap: '12px',
   },
   topCoursesRow: {
     display: 'flex',
     flexDirection: 'row',
-    gap: '16px',
+    gap: '24px',
     overflowX: 'auto',
-    paddingBottom: '12px',
+    paddingBottom: '16px',
   },
   topCard: {
     background: '#ffffff',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-    padding: '16px',
-    minWidth: '260px',
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    padding: '24px',
+    minWidth: '250px',
     flex: '0 0 auto',
+    minHeight: '400px',
   },
   courseImage: {
-    height: '140px',
+    height: '200px',
     width: '100%',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    borderRadius: '6px',
-    marginBottom: '12px',
+    borderRadius: '8px',
+    marginBottom: '16px',
   },
   courseTitle: {
-    fontSize: '18px',
+    fontSize: '24px',
     fontWeight: '600',
     color: '#1f2937',
-    marginBottom: '6px',
+    marginBottom: '8px',
   },
   courseInstitute: {
     color: 'rgb(107, 114, 128)',
-    fontSize: '14px',
-    marginBottom: '6px',
+    fontSize: '18px',
+    marginBottom: '8px',
   },
   rating: {
     display: 'flex',
     alignItems: 'center',
-    marginBottom: '12px',
+    marginBottom: '16px',
   },
   ratingStars: {
     color: '#facc15',
-    fontSize: '14px',
+    fontSize: '18px',
   },
   ratingEmptyStars: {
     color: '#d1d5db',
-    fontSize: '14px',
+    fontSize: '18px',
   },
   ratingText: {
     color: '#4b5563',
-    marginLeft: '6px',
-    fontSize: '12px',
+    marginLeft: '8px',
+    fontSize: '16px',
   },
   topButton: {
     background: '#2563eb',
     color: '#ffffff',
     fontWeight: '600',
-    padding: '8px 16px',
-    borderRadius: '6px',
+    padding: '12px 24px',
+    borderRadius: '8px',
     textDecoration: 'none',
     textAlign: 'center',
     display: 'block',
-  },
-  categoryFilter: {
-    marginBottom: '20px',
-    textAlign: 'center',
-  },
-  categorySelect: {
-    padding: '8px 16px',
-    fontSize: '14px',
-    borderRadius: '6px',
-    border: '1px solid #d1d5db',
-    background: '#ffffff',
-    outline: 'none',
-    color: '#1f2937',
+    fontSize: '16px',
   },
   courseSlide: {
-    padding: '0 8px',
+    padding: '0 12px',
   },
   courseCard: {
     background: '#ffffff',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-    padding: '16px',
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    padding: '24px',
+    margin: '10px',
+    minHeight: '400px',
   },
   courseLink: {
     color: '#2563eb',
@@ -613,8 +570,8 @@ const styles = {
     textDecoration: 'none',
     display: 'flex',
     alignItems: 'center',
-    gap: '6px',
-    fontSize: '14px',
+    gap: '8px',
+    fontSize: '16px',
   },
   arrow: {
     display: 'inline-block',
@@ -622,96 +579,100 @@ const styles = {
   },
   loadMoreButton: {
     display: 'block',
-    margin: '20px auto 0',
-    padding: '8px 20px',
+    margin: '24px auto 0',
+    padding: '12px 32px',
     background: '#2563eb',
     color: '#ffffff',
     fontWeight: '600',
-    borderRadius: '6px',
+    borderRadius: '8px',
     border: 'none',
     cursor: 'pointer',
+    fontSize: '18px',
   },
   noResults: {
     color: '#1f2937',
     textAlign: 'center',
-    fontSize: '16px',
-    margin: '20px 0',
+    fontSize: '20px',
+    margin: '24px 0',
   },
   testimonialSection: {
-    maxWidth: '1024px',
-    margin: '0 auto 40px',
-    padding: '24px 16px',
+    maxWidth: '1280px',
+    margin: '0 auto 48px',
+    padding: '32px 24px',
     background: '#f0f9ff',
-    borderRadius: '8px',
+    borderRadius: '12px',
   },
   testimonialSlide: {
-    padding: '0 16px',
+    padding: '0 24px',
   },
   testimonialCard: {
     background: '#ffffff',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-    padding: '20px',
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    padding: '32px',
     textAlign: 'center',
-    maxWidth: '480px',
+    maxWidth: '720px',
     margin: '0 auto',
+    minHeight: '300px',
   },
   testimonialText: {
     color: '#1f2937',
-    fontSize: '16px',
+    fontSize: '20px',
     fontStyle: 'italic',
-    marginBottom: '12px',
+    marginBottom: '16px',
   },
   testimonialUser: {
     color: '#1f2937',
     fontWeight: '600',
-    fontSize: '16px',
+    fontSize: '20px',
   },
   testimonialCourse: {
     color: '#4b5563',
-    fontSize: '12px',
+    fontSize: '16px',
   },
   noReviews: {
     textAlign: 'center',
   },
   ctaSection: {
-    maxWidth: '1024px',
-    margin: '0 auto 40px',
-    padding: '0 16px',
+    maxWidth: '1280px',
+    margin: '0 auto 48px',
+    padding: '0 24px',
     textAlign: 'center',
   },
   ctaText: {
     color: '#1f2937',
-    fontSize: '18px',
-    maxWidth: '480px',
-    margin: '0 auto 20px',
+    fontSize: '24px',
+    maxWidth: '720px',
+    margin: '0 auto 24px',
   },
   ctaButton: {
     background: '#2563eb',
     color: '#ffffff',
     fontWeight: '600',
-    padding: '10px 24px',
+    padding: '14px 32px',
     borderRadius: '9999px',
     textDecoration: 'none',
+    fontSize: '18px',
+    display: 'inline-block',
   },
   footer: {
     width: '100%',
-    background: '#1e40af',
+    background: 'linear-gradient(to right, #1e40af, #2563eb)',
     color: '#ffffff',
-    padding: '20px 0',
+    padding: '32px 0',
   },
   footerContent: {
-    maxWidth: '1024px',
+    maxWidth: '1280px',
     margin: '0 auto',
-    padding: '0 16px',
+    padding: '0 24px',
     textAlign: 'center',
   },
   footerText: {
-    fontSize: '14px',
+    fontSize: '16px',
   },
   icon: {
-    width: '24px',
-    height: '24px',
+    width: '32px',
+    height: '32px',
     color: '#2563eb',
   },
 };

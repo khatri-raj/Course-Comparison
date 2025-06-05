@@ -22,12 +22,11 @@ const CompareCourses = () => {
   useEffect(() => {
     const fetchCoursesAndSaved = async () => {
       try {
-        // Fetch all courses
         const coursesResponse = await axios.get('http://localhost:8000/api/courses/');
+        console.log('Courses API Response:', coursesResponse.data); // Debug API response
         setCourses(coursesResponse.data);
         setFilteredCourses(coursesResponse.data);
 
-        // Fetch saved courses if authenticated
         if (isAuthenticated) {
           const savedResponse = await axios.get('http://localhost:8000/api/saved-courses/', {
             headers: {
@@ -100,6 +99,10 @@ const CompareCourses = () => {
     }
   };
 
+  const handleViewDetails = (courseId) => {
+    navigate(`/course/${courseId}`);
+  };
+
   const headerVariants = {
     hidden: { opacity: 0, y: -50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -158,6 +161,12 @@ const CompareCourses = () => {
         .course-card:hover {
           transform: translateY(-5px);
           box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .course-image {
+          transition: filter 0.3s ease;
+        }
+        .course-card:hover .course-image {
+          filter: brightness(1.1);
         }
         .filter-select {
           transition: all 0.3s ease;
@@ -263,6 +272,7 @@ const CompareCourses = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
+                title="No courses found"
               >
                 No courses found with the selected filters.
               </motion.p>
@@ -277,10 +287,17 @@ const CompareCourses = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
+                  <div
+                style={{
+                  ...styles.courseImage,
+                  backgroundImage: `url(${course.image || 'https://source.unsplash.com/300x140/?course'})`,
+                }}
+                className="course-image"
+              ></div>
                   <h2 style={styles.courseTitle}>{course.Name}</h2>
                   <p style={styles.academyName}>{course.Institute}</p>
                   <div style={styles.courseDetails}>
-                    <p style={styles.detailText}>Fees: ${course.Fees}</p>
+                    <p style={styles.detailText}>Fees: ₹{course.Fees}</p>
                     <p style={styles.detailText}>Placement Rate: {course.Placement_rate}%</p>
                     <div style={styles.rating}>
                       <span style={styles.ratingStars}>{'★'.repeat(Math.round(course.Rating))}</span>
@@ -292,6 +309,7 @@ const CompareCourses = () => {
                     <motion.button
                       style={{ ...styles.actionButton, ...styles.viewButton }}
                       className="action-button view-button"
+                      onClick={() => handleViewDetails(course.id)}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                     >
@@ -439,7 +457,7 @@ const styles = {
   },
   courseGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
     gap: '24px',
   },
   courseCard: {
@@ -451,6 +469,14 @@ const styles = {
     flexDirection: 'column',
     gap: '12px',
   },
+  courseImage: {
+    height: '140px',
+    width: '100%',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    borderRadius: '6px',
+    marginBottom: '12px',
+  },
   courseTitle: {
     fontSize: '24px',
     fontWeight: '600',
@@ -461,7 +487,7 @@ const styles = {
     fontSize: '18px',
     color: '#4b5563',
     fontWeight: '500',
-    margin: 0,
+    margin: '0',
   },
   courseDetails: {
     flexGrow: 1,

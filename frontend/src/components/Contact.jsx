@@ -156,8 +156,8 @@ const Contact = () => {
             >
               <h2 style={styles.infoTitle}>Get in Touch</h2>
               <p style={styles.infoText}><strong>Email:</strong> support@coursecomparison.com</p>
-              <p style={styles.infoText}><strong>Phone:</strong> +1 (555) 123-4567</p>
-              <p style={styles.infoText}><strong>Address:</strong> 123 Learning Lane, Education City, EC 12345</p>
+              <p style={styles.infoText}><strong>Phone:</strong> +91 82628 13490 , 96071 35646 </p>
+              <p style={styles.infoText}><strong>Address:</strong> Park Plaza, above Birla Super Market, Karve Nagar, Pune, Maharashtra 411052</p>
             </motion.div>
             <motion.div
               style={styles.infoCard}

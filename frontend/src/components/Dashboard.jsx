@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaEye } from 'react-icons/fa';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 
@@ -23,14 +23,16 @@ const Dashboard = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
+        console.log('Saved Courses API Response:', response.data); // Debug log
         setSavedCourses(response.data.map(item => ({
-          savedCourseId: item.id, // Store SavedCourse ID
+          savedCourseId: item.id,
           id: item.course.id,
           Name: item.course.Name,
           Institute: item.course.Institute,
           Fees: item.course.Fees,
           Placement_rate: item.course.Placement_rate,
           Rating: item.course.Rating,
+          image: item.course.image, // Include image field
         })));
         setLoading(false);
       } catch (err) {
@@ -49,7 +51,6 @@ const Dashboard = () => {
         },
       });
       setSavedCourses(savedCourses.filter(course => course.savedCourseId !== savedCourseId));
-      // Optional: Clear error on success
       setError('');
     } catch (err) {
       console.error('Remove course error:', err.response?.data || err.message);
@@ -57,18 +58,28 @@ const Dashboard = () => {
     }
   };
 
+  const handleViewDetails = (courseId) => {
+    window.location.href = `/course/${courseId}`; // Force navigation
+  };
+
   const headerVariants = {
     hidden: { opacity: 0, y: -30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
   };
 
   const cardVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
+    hidden: { opacity: 0, scale: 0.9, y: 20 },
     visible: (i) => ({
       opacity: 1,
       scale: 1,
-      transition: { delay: i * 0.1, duration: 0.4 },
+      y: 0,
+      transition: { delay: i * 0.1, duration: 0.4, ease: 'easeOut' },
     }),
+  };
+
+  const buttonVariants = {
+    hover: { scale: 1.05, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)' },
+    tap: { scale: 0.95 },
   };
 
   return (
@@ -81,33 +92,43 @@ const Dashboard = () => {
         }
         .header-section {
           animation: gradientShift 10s ease infinite;
+          background-size: 200% 200%;
         }
         .course-card, .saved-card {
           transition: transform 0.3s ease, box-shadow 0.3s ease;
+          position: relative;
+          overflow: hidden;
         }
         .course-card:hover, .saved-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+          transform: translateY(-8px);
+          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
-        .progress-bar {
-          transition: width 0.5s ease;
+        .course-image {
+          transition: transform 0.5s ease, filter 0.3s ease;
         }
-        .action-button, .remove-button, .update-button {
+        .saved-card:hover .course-image {
+          transform: scale(1.1);
+          filter: brightness(1.1);
+        }
+        .action-button, .remove-button, .update-button, .view-button {
           transition: background-color 0.3s ease, transform 0.3s ease;
         }
-        .action-button:hover, .update-button:hover {
+        .action-button:hover, .update-button:hover, .view-button:hover {
           background-color: #1d4ed8;
-          transform: scale(1.03);
+          transform: scale(1.05);
         }
         .remove-button:hover {
           background-color: #e11d48;
-          transform: scale(1.03);
+          transform: scale(1.05);
         }
       `}</style>
 
       {/* Header */}
       <motion.header
-        style={{ ...styles.header, backgroundImage: 'linear-gradient(90deg, #2563eb, #1e40af, #2563eb)' }}
+        style={{
+          ...styles.header,
+          backgroundImage: 'linear-gradient(90deg, #2563eb, #1e40af, #2563eb)',
+        }}
         className="header-section"
         initial="hidden"
         animate="visible"
@@ -119,8 +140,9 @@ const Dashboard = () => {
             <motion.button
               style={styles.updateButton}
               className="update-button"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover="hover"
+              whileTap="tap"
+              variants={buttonVariants}
             >
               Update Profile
             </motion.button>
@@ -140,7 +162,7 @@ const Dashboard = () => {
           >
             <h2 style={styles.sectionTitle}>Welcome, {user?.username || 'User'}!</h2>
             <p style={styles.welcomeText}>
-              Here’s an overview of your learning journey. Keep up the great work!
+              Explore your saved courses and continue your learning journey.
             </p>
           </motion.div>
 
@@ -186,6 +208,13 @@ const Dashboard = () => {
                     custom={index}
                     whileHover={{ scale: 1.03 }}
                   >
+                    <div
+                      style={{
+                        ...styles.courseImage,
+                        backgroundImage: `url(${course.image || 'https://source.unsplash.com/300x140/?course'})`,
+                      }}
+                      className="course-image"
+                    ></div>
                     <h3 style={styles.courseTitle}>{course.Name}</h3>
                     <p style={styles.courseDetail}>Institute: {course.Institute}</p>
                     <p style={styles.courseDetail}>Fees: ${course.Fees}</p>
@@ -197,11 +226,22 @@ const Dashboard = () => {
                     </div>
                     <div style={styles.buttonGroup}>
                       <motion.button
+                        style={styles.viewButton}
+                        className="view-button"
+                        onClick={() => handleViewDetails(course.id)}
+                        whileHover="hover"
+                        whileTap="tap"
+                        variants={buttonVariants}
+                      >
+                        <FaEye style={styles.buttonIcon} /> View Details
+                      </motion.button>
+                      <motion.button
                         style={styles.removeButton}
                         className="remove-button"
                         onClick={() => handleRemoveCourse(course.savedCourseId)}
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
+                        whileHover="hover"
+                        whileTap="tap"
+                        variants={buttonVariants}
                       >
                         <FaTrash style={styles.buttonIcon} /> Remove
                       </motion.button>
@@ -227,164 +267,192 @@ const Dashboard = () => {
 const styles = {
   container: {
     minHeight: '100vh',
-    background: '#f0f9ff',
+    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
     display: 'flex',
     flexDirection: 'column',
   },
   header: {
     width: '100%',
-    padding: '40px 0',
-    backgroundSize: '200% 200%',
+    padding: '64px 0',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
   },
   headerContent: {
-    maxWidth: '1024px',
+    maxWidth: '1280px',
     margin: '0 auto',
-    padding: '0 16px',
+    padding: '0 24px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   heroTitle: {
-    fontSize: '36px',
+    fontSize: '48px',
     fontWeight: '700',
     color: '#ffffff',
     margin: 0,
+    textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
   },
   main: {
     width: '100%',
     flexGrow: 1,
-    padding: '40px 0',
+    padding: '64px 0',
   },
   section: {
-    maxWidth: '1024px',
+    maxWidth: '1280px',
     margin: '0 auto',
-    padding: '0 16px',
+    padding: '0 24px',
   },
   welcomeSection: {
-    marginBottom: '40px',
+    marginBottom: '48px',
     textAlign: 'center',
   },
   sectionTitle: {
-    fontSize: '24px',
+    fontSize: '32px',
     fontWeight: '600',
     color: '#1f2937',
-    marginBottom: '20px',
+    marginBottom: '24px',
   },
   welcomeText: {
     color: '#4b5563',
-    fontSize: '16px',
+    fontSize: '20px',
+    maxWidth: '720px',
+    margin: '0 auto',
   },
   savedSection: {
-    marginBottom: '40px',
+    marginBottom: '48px',
   },
   courseGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-    gap: '16px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '24px',
   },
   savedCard: {
     background: '#ffffff',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-    padding: '16px',
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    padding: '24px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '8px',
+    gap: '12px',
+  },
+  courseImage: {
+    height: '140px',
+    width: '100%',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    borderRadius: '8px',
+    marginBottom: '16px',
   },
   courseTitle: {
-    fontSize: '18px',
+    fontSize: '24px',
     fontWeight: '600',
-    color: '#1f2937',
+    color: '#1d4ed8',
     margin: 0,
   },
   courseDetail: {
     color: '#4b5563',
-    fontSize: '14px',
+    fontSize: '16px',
     margin: '4px 0',
   },
   rating: {
     display: 'flex',
     alignItems: 'center',
-    gap: '4px',
+    gap: '8px',
     margin: '4px 0',
   },
   ratingStars: {
     color: '#facc15',
-    fontSize: '14px',
+    fontSize: '18px',
   },
   ratingEmptyStars: {
     color: '#d1d5db',
-    fontSize: '14px',
+    fontSize: '18px',
   },
   ratingText: {
     color: '#4b5563',
-    fontSize: '12px',
-    marginLeft: '4px',
+    fontSize: '16px',
+    marginLeft: '8px',
   },
   buttonGroup: {
     display: 'flex',
-    gap: '8px',
-    marginTop: '12px',
+    gap: '12px',
+    marginTop: '16px',
   },
   updateButton: {
     background: '#2563eb',
     color: '#ffffff',
     fontWeight: '600',
-    padding: '10px 24px',
-    borderRadius: '6px',
+    padding: '12px 32px',
+    borderRadius: '8px',
     border: 'none',
     cursor: 'pointer',
-    fontSize: '14px',
+    fontSize: '16px',
+  },
+  viewButton: {
+    background: '#2563eb',
+    color: '#ffffff',
+    fontWeight: '600',
+    padding: '10px 0',
+    borderRadius: '8px',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    flex: 1,
   },
   removeButton: {
     background: '#f43f5e',
     color: '#ffffff',
     fontWeight: '600',
-    padding: '8px 0',
-    borderRadius: '6px',
+    padding: '10px 0',
+    borderRadius: '8px',
     border: 'none',
     cursor: 'pointer',
-    fontSize: '14px',
+    fontSize: '16px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '6px',
+    gap: '8px',
     flex: 1,
   },
   buttonIcon: {
-    width: '14px',
-    height: '14px',
+    width: '16px',
+    height: '16px',
   },
   noResults: {
     color: '#4b5563',
     textAlign: 'center',
-    fontSize: '16px',
-    margin: '20px 0',
+    fontSize: '20px',
+    margin: '32px 0',
   },
   errorText: {
     color: '#e11d48',
     textAlign: 'center',
-    fontSize: '16px',
-    margin: '20px 0',
+    fontSize: '20px',
+    margin: '32px 0',
   },
   link: {
     color: '#2563eb',
     textDecoration: 'underline',
+    fontWeight: '600',
   },
   footer: {
     width: '100%',
-    background: '#1e40af',
+    background: 'linear-gradient(to right, #1e40af, #2563eb)',
     color: '#ffffff',
-    padding: '20px 0',
+    padding: '32px 0',
   },
   footerContent: {
-    maxWidth: '1024px',
+    maxWidth: '1280px',
     margin: '0 auto',
-    padding: '0 16px',
+    padding: '0 24px',
     textAlign: 'center',
   },
   footerText: {
-    fontSize: '14px',
+    fontSize: '16px',
   },
 };
 

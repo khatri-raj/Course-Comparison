@@ -59,6 +59,11 @@ const UpdateProfile = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
+  const inputVariants = {
+    focus: { scale: 1.02, borderColor: '#2563eb', transition: { duration: 0.2 } },
+    blur: { scale: 1, borderColor: '#d1d5db', transition: { duration: 0.2 } },
+  };
+
   return (
     <div style={styles.container}>
       <style jsx>{`
@@ -72,17 +77,28 @@ const UpdateProfile = () => {
         }
         .form-input {
           transition: all 0.3s ease;
+          background: #ffffff;
+          color: #000000;
         }
         .form-input:focus {
           border-color: #2563eb;
           box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
+          outline: none;
         }
         .submit-button {
-          transition: background-color 0.3s ease, transform 0.3s ease;
+          transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
         }
         .submit-button:hover {
           background-color: #1e40af;
           transform: scale(1.05);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .submit-button:active {
+          transform: scale(0.95);
+        }
+        .link:hover {
+          color: #1e40af;
+          text-decoration: underline;
         }
       `}</style>
 
@@ -114,10 +130,10 @@ const UpdateProfile = () => {
               {success && (
                 <motion.p
                   style={styles.successText}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
                 >
                   {success}
                 </motion.p>
@@ -125,10 +141,10 @@ const UpdateProfile = () => {
               {error && (
                 <motion.p
                   style={styles.errorText}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
                 >
                   {error}
                 </motion.p>
@@ -139,62 +155,78 @@ const UpdateProfile = () => {
                 <label htmlFor="username" style={styles.formLabel}>
                   Username
                 </label>
-                <input
+                <motion.input
                   type="text"
                   id="username"
                   name="username"
                   value={formData.username}
                   onChange={handleInputChange}
-                  style={styles.formInput}
+                  style={{ ...styles.formInput, background: '#ffffff', color: '#000000' }}
                   className="form-input"
                   placeholder="Enter your username"
                   required
+                  variants={inputVariants}
+                  whileFocus="focus"
+                  initial="blur"
+                  animate="blur"
                 />
               </div>
               <div style={styles.formGroup}>
                 <label htmlFor="email" style={styles.formLabel}>
                   Email
                 </label>
-                <input
+                <motion.input
                   type="email"
                   id="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  style={styles.formInput}
+                  style={{ ...styles.formInput, background: '#ffffff', color: '#000000' }}
                   className="form-input"
                   placeholder="Enter your email"
                   required
+                  variants={inputVariants}
+                  whileFocus="focus"
+                  initial="blur"
+                  animate="blur"
                 />
               </div>
               <div style={styles.formGroup}>
                 <label htmlFor="password" style={styles.formLabel}>
                   New Password
                 </label>
-                <input
+                <motion.input
                   type="password"
                   id="password"
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  style={styles.formInput}
+                  style={{ ...styles.formInput, background: '#ffffff', color: '#000000' }}
                   className="form-input"
                   placeholder="Enter new password (optional)"
+                  variants={inputVariants}
+                  whileFocus="focus"
+                  initial="blur"
+                  animate="blur"
                 />
               </div>
               <div style={styles.formGroup}>
                 <label htmlFor="password_confirm" style={styles.formLabel}>
                   Confirm New Password
                 </label>
-                <input
+                <motion.input
                   type="password"
                   id="password_confirm"
                   name="password_confirm"
                   value={formData.password_confirm}
                   onChange={handleInputChange}
-                  style={styles.formInput}
+                  style={{ ...styles.formInput, background: '#ffffff', color: '#000000' }}
                   className="form-input"
                   placeholder="Confirm new password (optional)"
+                  variants={inputVariants}
+                  whileFocus="focus"
+                  initial="blur"
+                  animate="blur"
                 />
               </div>
               <motion.button
@@ -209,7 +241,7 @@ const UpdateProfile = () => {
             </form>
             <p style={styles.loginLink}>
               Back to{' '}
-              <Link to="/dashboard" style={styles.link}>
+              <Link to="/dashboard" style={styles.link} className="link">
                 Dashboard
               </Link>
             </p>
@@ -279,7 +311,7 @@ const styles = {
   sectionTitle: {
     fontSize: '24px',
     fontWeight: '600',
-    color: '#1f2937',
+    color: '#000000',
     marginBottom: '20px',
     textAlign: 'center',
   },
@@ -295,7 +327,7 @@ const styles = {
   formLabel: {
     fontSize: '16px',
     fontWeight: '500',
-    color: '#1f2937',
+    color: '#000000',
     marginBottom: '8px',
   },
   formInput: {
@@ -304,7 +336,8 @@ const styles = {
     border: '1px solid #d1d5db',
     fontSize: '14px',
     outline: 'none',
-    color: '#1f2937',
+    background: '#ffffff',
+    color: '#000000',
   },
   submitButton: {
     background: '#2563eb',
@@ -332,7 +365,7 @@ const styles = {
   loginLink: {
     marginTop: '16px',
     textAlign: 'center',
-    color: '#4b5563',
+    color: '#000000',
     fontSize: '14px',
   },
   link: {

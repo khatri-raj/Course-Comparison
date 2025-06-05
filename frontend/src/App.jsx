@@ -10,11 +10,11 @@ import Help from './components/Help';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
-import UpdateProfile from './components/UpdateProfile'; // Import the new component
+import UpdateProfile from './components/UpdateProfile';
+import CourseDetails from './components/CourseDetails';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-// Protected Route component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = React.useContext(AuthContext);
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -35,7 +35,8 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/update-profile" element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>} /> {/* New route */}
+            <Route path="/update-profile" element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>} />
+            <Route path="/course/:id" element={<CourseDetails />} />
           </Routes>
         </div>
       </AuthProvider>

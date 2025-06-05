@@ -134,7 +134,7 @@ const Navbar = () => {
           variants={logoVariants}
         >
           <Link to="/" style={styles.logo}>
-            Course<span style={styles.logoHighlight}>Compare</span>
+            Compare<span style={styles.logoHighlight}>IT</span>
           </Link>
         </motion.div>
 
@@ -318,5 +318,4 @@ const styles = {
     color: '#1e40af',
   },
 };
-
 export default Navbar;

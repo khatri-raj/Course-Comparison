@@ -10,7 +10,18 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
-
-admin.site.register(Course)
 admin.site.register(ContactMessage)
 admin.site.register(Review)
+# admin.site.register(Course)
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ('Name', 'Institute', 'Rating', 'image')
+    list_filter = ('Institute',)
+    search_fields = ('Name', 'Institute')
+
+    def image(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" width="50" height="50" />', obj.image.url)
+        return "No Image"
+    image.allow_tags = True

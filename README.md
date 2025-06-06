@@ -15,10 +15,6 @@ Many students struggle to find the best courses and institutes in Pune. To simpl
 ![Home Page](Screenshots/Home.png)
 ![Home Page 2](Screenshots/Home2.png)
 
-### 🎓 Show Courses
-
-![Show Courses](Screenshots/Show.png)
-
 ### 📊 Compare Courses
 
 ![Compare Courses](Screenshots/Compare.png)
@@ -47,6 +43,23 @@ Many students struggle to find the best courses and institutes in Pune. To simpl
 
 ![Register](Screenshots/Register.png)
 
+### 📊 Dashboard
+
+![Dashboard](Screenshots/Dashboard.png)
+
+### 🧾 Course Detail Page
+
+![Course_Detail_Page](Screenshots/Course_Detail_Page.png)
+
+### 🧑 Update Profile
+
+![Update_Profile](Screenshots/Update_Profile.png)
+
+
+### ⚙️ Users Administration
+
+![Users Administration](Screenshots/Users_Administration.png)
+
 ### ⚙️ Admin: Manage Courses
 
 ![Courses Administration](Screenshots/Courses_Administration.png)
@@ -59,6 +72,21 @@ Many students struggle to find the best courses and institutes in Pune. To simpl
 
 ![Enquiry Admin](Screenshots/Enquiry_Administration.png)
 
+### ⚙️ Saved Courses
+
+![Saved Courses](Screenshots/Saved_Courses.png)
+
+### 🔗 API: Courses
+
+![apiCourses](Screenshots/apiCourses.png)
+
+### 🔗 API: Reviews
+
+![apiReviews](Screenshots/apiReviews.png)
+
+### 🔗 API: Contact Messages
+
+![apiContact](Screenshots/apiContact.png)
 ---
 
 ## 🔍 Features

@@ -1,25 +1,26 @@
-// src/components/CompareCourses.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaEye, FaSave } from 'react-icons/fa';
 import { AuthContext } from '../context/AuthContext';
-import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
+import { ThemeContext } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 
 const CompareCourses = () => {
   const { isAuthenticated } = useContext(AuthContext);
-  const { theme } = useContext(ThemeContext); // Use ThemeContext
+  const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [savedCourseIds, setSavedCourseIds] = useState([]);
+  const [courseTypes, setCourseTypes] = useState([]); // New state for dynamic course types
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState({
     fees: 'none',
     placement: 'none',
     rating: 'none',
+    courseType: 'none',
   });
 
   useEffect(() => {
@@ -29,6 +30,20 @@ const CompareCourses = () => {
         console.log('Courses API Response:', coursesResponse.data);
         setCourses(coursesResponse.data);
         setFilteredCourses(coursesResponse.data);
+
+        // Extract unique course types from course names
+        const extractedTypes = coursesResponse.data.map(course => {
+          const name = course.Name.toLowerCase();
+          if (name.includes('mern') || name.includes('full stack')) return 'Full Stack';
+          if (name.includes('java')) return 'Java';
+          if (name.includes('python')) return 'Python';
+          if (name.includes('data science')) return 'Data Science';
+          if (name.includes('cloud computing')) return 'Cloud Computing';
+          return null;
+        }).filter(type => type !== null);
+
+        // Set unique course types
+        setCourseTypes([...new Set(extractedTypes)].sort());
 
         if (isAuthenticated) {
           const savedResponse = await axios.get('http://localhost:8000/api/saved-courses/', {
@@ -51,6 +66,22 @@ const CompareCourses = () => {
   useEffect(() => {
     let updatedCourses = [...courses];
 
+    // Apply course type filter
+    if (filter.courseType !== 'none') {
+      updatedCourses = updatedCourses.filter(course => {
+        const name = course.Name.toLowerCase();
+        const type = filter.courseType.toLowerCase();
+        return (
+          (type === 'full stack' && (name.includes('mern') || name.includes('full stack'))) ||
+          (type === 'java' && name.includes('java')) ||
+          (type === 'python' && name.includes('python')) ||
+          (type === 'data science' && name.includes('data science')) ||
+          (type === 'cloud computing' && name.includes('cloud computing'))
+        );
+      });
+    }
+
+    // Apply existing sort filters
     if (filter.fees === 'lowToHigh') {
       updatedCourses.sort((a, b) => a.Fees - b.Fees);
     }
@@ -186,12 +217,19 @@ const CompareCourses = () => {
         }
         .action-button:hover {
           transform: scale(1.05);
-        Ga
+        }
         .view-button:hover {
           background-color: var(--accent-hover);
         }
         .save-button:hover {
           background-color: #16a34a;
+        }
+        .filter-box {
+          border: 2px solid var(--accent);
+          borderRadius: 12px;
+          padding: 16px;
+          background: var(--card-background);
+          boxShadow: 0 4px 6px var(--shadow);
         }
       `}</style>
 
@@ -223,44 +261,61 @@ const CompareCourses = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <div style={styles.filterGroup}>
-              <label style={styles.filterLabel}>Sort by Fees:</label>
-              <select
-                name="fees"
-                value={filter.fees}
-                onChange={handleFilterChange}
-                style={styles.filterSelect}
-                className="filter-select"
-              >
-                <option value="none">None</option>
-                <option value="lowToHigh">Low to High</option>
-              </select>
-            </div>
-            <div style={styles.filterGroup}>
-              <label style={styles.filterLabel}>Sort by Placement Rate:</label>
-              <select
-                name="placement"
-                value={filter.placement}
-                onChange={handleFilterChange}
-                style={styles.filterSelect}
-                className="filter-select"
-              >
-                <option value="none">None</option>
-                <option value="highToLow">High to Low</option>
-              </select>
-            </div>
-            <div style={styles.filterGroup}>
-              <label style={styles.filterLabel}>Sort by Rating:</label>
-              <select
-                name="rating"
-                value={filter.rating}
-                onChange={handleFilterChange}
-                style={styles.filterSelect}
-                className="filter-select"
-              >
-                <option value="none">None</option>
-                <option value="highToLow">High to Low</option>
-              </select>
+            <div style={styles.filterBox} className="filter-box">
+              <div style={styles.filterGroup}>
+                <label style={styles.filterLabel}>Filter by Course Type:</label>
+                <select
+                  name="courseType"
+                  value={filter.courseType}
+                  onChange={handleFilterChange}
+                  style={styles.filterSelect}
+                  className="filter-select"
+                >
+                  <option value="none">All Courses</option>
+                  {courseTypes.map(type => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+              <div style={styles.filterGroup}>
+                <label style={styles.filterLabel}>Sort by Fees:</label>
+                <select
+                  name="fees"
+                  value={filter.fees}
+                  onChange={handleFilterChange}
+                  style={styles.filterSelect}
+                  className="filter-select"
+                >
+                  <option value="none">None</option>
+                  <option value="lowToHigh">Low to High</option>
+                </select>
+              </div>
+              <div style={styles.filterGroup}>
+                <label style={styles.filterLabel}>Sort by Placement Rate:</label>
+                <select
+                  name="placement"
+                  value={filter.placement}
+                  onChange={handleFilterChange}
+                  style={styles.filterSelect}
+                  className="filter-select"
+                >
+                  <option value="none">None</option>
+                  <option value="highToLow">High to Low</option>
+                </select>
+              </div>
+              <div style={styles.filterGroup}>
+                <label style={styles.filterLabel}>Sort by Rating:</label>
+                <select
+                  name="rating"
+                  value={filter.rating}
+                  onChange={handleFilterChange}
+                  style={styles.filterSelect}
+                  className="filter-select"
+                >
+                  <option value="none">None</option>
+                  <option value="highToLow">High to Low</option>
+                </select>
+              </div>
             </div>
           </motion.div>
 
@@ -383,7 +438,7 @@ const styles = {
   },
   errorContainer: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
+    background: 'linear-gradient(to bottom, var(--background), watch, var(--background-secondary))',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -437,10 +492,17 @@ const styles = {
     gap: '24px',
     marginBottom: '32px',
     flexWrap: 'wrap',
-    background: 'var(--card-background)',
+  },
+  filterBox: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '24px',
+    flexWrap: 'wrap',
+    border: '2px solid var(--accent)',
     borderRadius: '12px',
-    boxShadow: '0 4px 6px var(--shadow)',
     padding: '16px',
+    background: 'var(--card-background)',
+    boxShadow: '0 4px 6px var(--shadow)',
   },
   filterGroup: {
     display: 'flex',
@@ -545,7 +607,7 @@ const styles = {
     background: 'var(--button-bg)',
   },
   saveButton: {
-    background: '#22c55e', // Kept as a fallback for consistency, can be themed if needed
+    background: '#22c55e',
   },
   buttonIcon: {
     width: '16px',

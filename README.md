@@ -1,96 +1,113 @@
 # 🎓 Course Comparison Web App
-Many students struggle to find the best courses and institutes in Pune. To simplify this, I built Course Comparison using Django, HTML, CSS, and JavaScript. It allows students to easily sort and compare institutes based on fees, placement rates, and ratings, helping them find the best option within their budget.
+Many students struggle to find the best courses and institutes in Pune. To simplify this, I built **Course Comparison** using **Django (Backend)** and **React (Frontend)**. It allows students to easily compare institutes based on fees, placement rates, and ratings — helping them find the best options within their budget.
 
 ---
+
 ## 🌐 Live Demo
-🔗 [View Live Application](https://your-live-demo-link.com)  
+🔗 [View Live Application](https://your-live-demo-link.com)
 *(Replace with actual deployment URL if available)*
 
 ---
-
 ## 📸 Screenshots
 
-### 🏠 Home Page  
-![Home Page](Screenshots/Home.png)
-![Home Page](Screenshots/Home2.png)
+### 🏠 Home Page
 
-### 🎓 Show Courses Page
+![Home Page](Screenshots/Home.png)
+![Home Page 2](Screenshots/Home2.png)
+
+### 🎓 Show Courses
+
 ![Show Courses](Screenshots/Show.png)
 
-### 📊 Comparison Page  
+### 📊 Compare Courses
+
 ![Compare Courses](Screenshots/Compare.png)
 
-### 🗣️ Reviews Page  
+### 🗣️ Reviews
+
 ![Reviews](Screenshots/Reviews.png)
 
-### 📝 Submit Review Form  (Login Required)
+### 📝 Submit Review (Login Required)
+
 ![Review Form](Screenshots/ReviewForm.png)
 
-### ✉️ Contact Form  
+### ✉️ Contact Form
+
 ![Contact Form](Screenshots/Contact.png)
 
-### ❓ Help / FAQ Page  
+### ❓ Help / FAQ
+
 ![Help](Screenshots/Help.png)
 
-### 🔐 Login Page 
-![Login Page](Screenshots/Login.png)
+### 🔐 Login
 
-### 🏠 🧑‍💻 Register Page  
-![Register Page](Screenshots/Register.png)
+![Login](Screenshots/Login.png)
 
-### 🎓 Courses Administration Panel  
+### 🧑‍💻 Register
+
+![Register](Screenshots/Register.png)
+
+### ⚙️ Admin: Manage Courses
+
 ![Courses Administration](Screenshots/Courses_Administration.png)
 
-### 🧾 Review Administration Panel  
-![Review Administration](Screenshots/Review_Administration.png)
+### ⚙️ Admin: Manage Reviews
 
-### 📬 Enquiry Administration Panel  
-![Enquiry Administration](Screenshots/Enquiry_Administration.png)
+![Review Admin](Screenshots/Review_Administration.png)
 
+### ⚙️ Admin: Manage Enquiries
+
+![Enquiry Admin](Screenshots/Enquiry_Administration.png)
 
 ---
 
-🔍 Features
-- 🔎 Course Search & Filter – Easily search and filter courses by name, fees, ratings, and more.
-- 📊 Compare Multiple Courses – Side-by-side comparison to help students choose the best institute.
-- ⭐ View Ratings & Reviews – See honest feedback from other users to make informed decisions.
-- 📝 Register and Login to Submit Reviews – Only logged-in users can submit reviews, ensuring accountability.
-- ✉️ Contact Form for Inquiries – Reach out directly for any questions or guidance.
-- 🔐 Secure Login, Logout, and Signup System – Built-in authentication with session management.
-- 🛡️ Admin Dashboard (Django) – Full admin control for managing courses, reviews, and inquiries.
+## 🔍 Features
 
-
+* 🔎 **Search & Filter** – Easily search and filter courses by name, fees, and ratings.
+* 📊 **Compare Courses** – Side-by-side comparison to find the best option.
+* ⭐ **Ratings & Reviews** – View and share real user feedback.
+* 📝 **Review System** – Authenticated users can submit reviews.
+* ✉️ **Contact Admin** – Form to submit queries or messages.
+* 🔐 **Authentication** – Secure login, logout, and registration.
+* 🛡️ **Admin Panel** – Manage courses, reviews, and messages with full control.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** HTML5, CSS3, Bootstrap
-- **Backend:** Python, Django
-- **Database:** MySQL
-- **Others:** Django Admin, Forms, Templates, Static Files
+* **Frontend:** React.js, Bootstrap, CSS3
+* **Backend:** Django, Django REST Framework
+* **Database:** MySQL
+* **Others:** JWT Auth, React Hooks, Axios, Django Admin
 
 ---
 
 ## 📁 Project Structure
 
+```
 Course-Comparison/
-├── comparison/
-│ ├── migrations/
-│ ├── templates/comparison/
-│ ├── static/
-│ ├── admin.py
-│ ├── models.py
-│ ├── views.py
-│ ├── urls.py
-│ └── forms.py
-├── CourseComparison/
-│ ├── settings.py
-│ ├── urls.py
-│ └── wsgi.py
-├── manage.py
-├── db.sqlite3
-└── requirements.txt
+├── backend/ (Django)
+│   ├── comparison/
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   │   ├── urls.py
+│   │   ├── admin.py
+│   │   └── ...
+│   ├── CourseComparison/
+│   └── manage.py
+│
+├── frontend/ (React)
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── App.jsx
+│   │   └── ...
+│   ├── package.json
+│   └── ...
+```
 
 ---
 
@@ -98,19 +115,21 @@ Course-Comparison/
 
 ### 🔧 Prerequisites
 
-- Python 3.7+
-- pip (Python package installer)
+* Python 3.8+
+* Node.js & npm
+* MySQL (or compatible DB)
 
-### 💻 Installation Steps
+---
+
+## 🔨 Backend Setup (Django)
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/khatri-raj/Course-Comparison.git
-cd Course-Comparison
+# 1. Navigate to backend
+cd backend
 
 # 2. Create and activate virtual environment
 python -m venv venv
-source venv/bin/activate      # On Windows: venv\Scripts\activate
+source venv/bin/activate      # Windows: venv\Scripts\activate
 
 # 3. Install dependencies
 pip install -r requirements.txt
@@ -119,24 +138,74 @@ pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
 
-# 5. Run the development server
-python manage.py runserver
-Then go to: http://127.0.0.1:8000
-
-🔐 Admin Access
-# Create a superuser
+# 5. Create superuser for admin panel
 python manage.py createsuperuser
-Log in at: http://127.0.0.1:8000/admin
 
-📦 Sample requirements.txt
+# 6. Run the server
+python manage.py runserver
+```
+
+> Backend API runs at: `http://127.0.0.1:8000/api/`
+> Admin Panel: `http://127.0.0.1:8000/admin/`
+
+---
+
+## 💻 Frontend Setup (React)
+
+```bash
+# 1. Navigate to frontend folder
+cd frontend
+
+# 2. Install dependencies
+npm install
+
+# 3. Start the development server
+npm start
+```
+
+> Frontend runs at: `http://localhost:3000`
+
+> API base URL is set in `.env` or Axios instance for communication with Django backend.
+
+---
+
+## 🔗 Connecting Frontend and Backend
+
+* Used **Axios** to make HTTP requests from React to Django REST API.
+
+* Django CORS headers enabled in backend:
+
+  ```python
+  # settings.py
+  INSTALLED_APPS += ['corsheaders']
+  MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
+  CORS_ALLOW_ALL_ORIGINS = True  # or specific origin list
+  ```
+
+* JWT Authentication implemented using `djangorestframework-simplejwt`.
+
+---
+
+## 📦 Sample requirements.txt (Backend)
+
+```txt
 Django>=4.0,<5.0
+djangorestframework
+djangorestframework-simplejwt
+mysqlclient
+corsheaders
 pytz
 sqlparse
 asgiref
+```
 
-👨‍💻 Built 100% by me – from backend models to frontend UI and deployment setup.
+---
 
-📫 Contact
-Name: Raj Khatri
-Email: rajkhatri8060@gmail.com
-GitHub: @khatri-raj
+## 👨‍💻 Built With Love by Raj Khatri
+
+* 📫 **Email**: [rajkhatri8060@gmail.com](mailto:rajkhatri8060@gmail.com)
+* 💼 **GitHub**: [@khatri-raj](https://github.com/khatri-raj)
+
+---
+
+Let me know if you'd like a badge section (for tech, stars, forks), deployment info for platforms like **Render** or **Vercel**, or instructions for `.env` setup for both frontend and backend.

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Slider from 'react-slick';
 import { AuthContext } from '../context/AuthContext';
+import { ThemeContext } from '../context/ThemeContext';
 import { FaStar, FaGraduationCap, FaQuoteLeft, FaRocket } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -10,6 +11,7 @@ const heroBackground = 'https://source.unsplash.com/1920x1080/?education,learnin
 
 const Home = () => {
   const { isAuthenticated } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
   const [courses, setCourses] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [visibleCourses, setVisibleCourses] = useState(6);
@@ -23,7 +25,6 @@ const Home = () => {
           axios.get('http://localhost:8000/api/courses/'),
           axios.get('http://localhost:8000/api/reviews/'),
         ]);
-        console.log('Courses:', coursesResponse.data); // Debug log
         const sortedCourses = coursesResponse.data.sort((a, b) => b.Rating - a.Rating);
         const sortedReviews = reviewsResponse.data.sort((a, b) => b.rating - a.rating).slice(0, 3);
         setCourses(sortedCourses);
@@ -66,7 +67,7 @@ const Home = () => {
   };
 
   const handleViewClick = (courseId) => {
-    console.log(`View Details clicked for course ID: ${courseId}`); // Debug log
+    console.log(`View Details clicked for course ID: ${courseId}`);
   };
 
   const heroVariants = {
@@ -85,7 +86,7 @@ const Home = () => {
   };
 
   const buttonVariants = {
-    hover: { scale: 1.05, boxShadow: '0 6px 12px rgba(0, 0, 0, 0.15)' },
+    hover: { scale: 1.05, boxShadow: '0 6px 12px var(--shadow-hover)' },
     tap: { scale: 0.95 },
   };
 
@@ -134,8 +135,8 @@ const Home = () => {
         }
         .course-card:hover, .top-card:hover, .testimonial-card:hover {
           transform: translateY(-10px) scale(1.02);
-          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-          background-color: #f8fafc;
+          box-shadow: 0 12px 24px var(--shadow-hover);
+          background-color: ${theme === 'light' ? '#e0f7fa' : 'var(--card-background)'};
         }
         .course-image {
           transition: transform 0.5s ease, filter 0.3s ease;
@@ -148,14 +149,14 @@ const Home = () => {
           transition: all 0.3s ease;
         }
         .primary-button:hover, .top-button:hover, .cta-button:hover, .load-more-button:hover {
-          background-color: #1d4ed8;
-          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          background-color: var(--accent-hover);
+          box-shadow: 0 6px 12px var(--shadow-hover);
         }
         .course-link {
           transition: color 0.3s ease;
         }
         .course-link:hover {
-          color: #1d4ed8;
+          color: var(--accent-hover);
         }
         .course-link:hover .arrow {
           transform: translateX(8px);
@@ -167,26 +168,25 @@ const Home = () => {
           left: 0;
           width: 100%;
           height: 100%;
-          background: linear-gradient(45deg, rgba(37, 99, 235, 0.1), rgba(255, 255, 255, 0));
+          background: linear-gradient(45deg, ${theme === 'light' ? 'rgba(129, 199, 132, 0.1)' : 'var(--accent, 0.1)'}, rgba(255, 255, 255, 0));
           opacity: 0;
           transition: opacity 0.3s ease;
-          pointer-events: none; /* Ensure pseudo-element doesn't block clicks */
+          pointer-events: none;
         }
         .course-card:hover::after, .top-card:hover::after, .testimonial-card:hover::after {
           opacity: 1;
         }
         .top-button, .course-link {
           position: relative;
-          z-index: 1; /* Ensure buttons are above pseudo-elements */
-          pointer-events: auto; /* Ensure buttons are clickable */
+          z-index: 1;
+          pointer-events: auto;
         }
       `}</style>
 
-      {/* Hero Section */}
       <motion.header
         style={{
           ...styles.header,
-          backgroundImage: `linear-gradient(to right, rgba(37,99,235,0.6), rgba(31,41,55,0.8)), url(${heroBackground})`,
+          backgroundImage: `linear-gradient(to right, var(--accent, 0.6), var(--background-secondary, 0.8)), url(${heroBackground})`,
         }}
         className="hero-section"
         initial="hidden"
@@ -220,7 +220,6 @@ const Home = () => {
         </div>
       </motion.header>
 
-      {/* Top 3 Courses Section */}
       <motion.section style={styles.section} initial="hidden" animate="visible" variants={heroVariants}>
         <h2 style={styles.sectionTitle}>
           <FaStar style={styles.icon} /> Top-Rated Courses
@@ -263,7 +262,6 @@ const Home = () => {
         </div>
       </motion.section>
 
-      {/* Featured Courses Section */}
       <motion.section style={styles.section} initial="hidden" animate="visible" variants={heroVariants}>
         <h2 style={styles.sectionTitle}>
           <FaGraduationCap style={styles.icon} /> Featured Courses
@@ -325,7 +323,6 @@ const Home = () => {
         )}
       </motion.section>
 
-      {/* Testimonials Section */}
       <motion.section style={styles.testimonialSection} initial="hidden" animate="visible" variants={heroVariants}>
         <h2 style={styles.sectionTitle}>
           <FaQuoteLeft style={styles.icon} /> Learner Reviews
@@ -362,7 +359,6 @@ const Home = () => {
         </Slider>
       </motion.section>
 
-      {/* Call to Action Section */}
       <motion.section style={styles.ctaSection} initial="hidden" animate="visible" variants={heroVariants}>
         <h2 style={styles.sectionTitle}>
           <FaRocket style={styles.icon} /> Start Learning Today
@@ -389,13 +385,13 @@ const Home = () => {
 const styles = {
   container: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     flexDirection: 'column',
   },
   loadingContainer: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -405,19 +401,19 @@ const styles = {
   spinner: {
     width: '32px',
     height: '32px',
-    border: '4px solid #2563eb',
+    border: '4px solid var(--accent)',
     borderTop: '4px solid transparent',
     borderRadius: '50%',
     animation: 'spin 1s linear infinite',
   },
   loadingText: {
-    color: '#1f2937',
+    color: 'var(--text-primary)',
     fontWeight: '600',
     fontSize: '18px',
   },
   errorContainer: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -444,15 +440,15 @@ const styles = {
   heroTitle: {
     fontSize: '48px',
     fontWeight: '700',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '16px',
   },
   highlightText: {
-    color: '#facc15',
+    color: 'var(--highlight)',
   },
   heroSubtitle: {
     fontSize: '24px',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '32px',
     maxWidth: '720px',
     marginLeft: 'auto',
@@ -464,8 +460,8 @@ const styles = {
     gap: '16px',
   },
   primaryButton: {
-    background: '#2563eb',
-    color: '#ffffff',
+    background: 'var(--button-bg)',
+    color: 'var(--button-text)',
     fontWeight: '600',
     padding: '14px 32px',
     borderRadius: '9999px',
@@ -481,7 +477,7 @@ const styles = {
   sectionTitle: {
     fontSize: '32px',
     fontWeight: '600',
-    color: '#1f2937',
+    color: 'var(--text-primary)',
     marginBottom: '24px',
     textAlign: 'center',
     display: 'flex',
@@ -497,9 +493,9 @@ const styles = {
     paddingBottom: '16px',
   },
   topCard: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 12px var(--shadow)',
     padding: '24px',
     minWidth: '250px',
     flex: '0 0 auto',
@@ -516,11 +512,11 @@ const styles = {
   courseTitle: {
     fontSize: '24px',
     fontWeight: '600',
-    color: '#1f2937',
+    color: 'var(--text-primary)',
     marginBottom: '8px',
   },
   courseInstitute: {
-    color: 'rgb(107, 114, 128)',
+    color: 'var(--text-secondary)',
     fontSize: '18px',
     marginBottom: '8px',
   },
@@ -530,21 +526,21 @@ const styles = {
     marginBottom: '16px',
   },
   ratingStars: {
-    color: '#facc15',
+    color: 'var(--highlight)',
     fontSize: '18px',
   },
   ratingEmptyStars: {
-    color: '#d1d5db',
+    color: 'var(--text-secondary)',
     fontSize: '18px',
   },
   ratingText: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     marginLeft: '8px',
     fontSize: '16px',
   },
   topButton: {
-    background: '#2563eb',
-    color: '#ffffff',
+    background: 'var(--button-bg)',
+    color: 'var(--button-text)',
     fontWeight: '600',
     padding: '12px 24px',
     borderRadius: '8px',
@@ -557,15 +553,15 @@ const styles = {
     padding: '0 12px',
   },
   courseCard: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 12px var(--shadow)',
     padding: '24px',
     margin: '10px',
     minHeight: '400px',
   },
   courseLink: {
-    color: '#2563eb',
+    color: 'var(--accent)',
     fontWeight: '500',
     textDecoration: 'none',
     display: 'flex',
@@ -581,8 +577,8 @@ const styles = {
     display: 'block',
     margin: '24px auto 0',
     padding: '12px 32px',
-    background: '#2563eb',
-    color: '#ffffff',
+    background: 'var(--button-bg)',
+    color: 'var(--button-text)',
     fontWeight: '600',
     borderRadius: '8px',
     border: 'none',
@@ -590,7 +586,7 @@ const styles = {
     fontSize: '18px',
   },
   noResults: {
-    color: '#1f2937',
+    color: 'var(--text-primary)',
     textAlign: 'center',
     fontSize: '20px',
     margin: '24px 0',
@@ -599,16 +595,16 @@ const styles = {
     maxWidth: '1280px',
     margin: '0 auto 48px',
     padding: '32px 24px',
-    background: '#f0f9ff',
+    background: 'var(--background)',
     borderRadius: '12px',
   },
   testimonialSlide: {
     padding: '0 24px',
   },
   testimonialCard: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 12px var(--shadow)',
     padding: '32px',
     textAlign: 'center',
     maxWidth: '720px',
@@ -616,18 +612,18 @@ const styles = {
     minHeight: '300px',
   },
   testimonialText: {
-    color: '#1f2937',
+    color: 'var(--text-primary)',
     fontSize: '20px',
     fontStyle: 'italic',
     marginBottom: '16px',
   },
   testimonialUser: {
-    color: '#1f2937',
+    color: 'var(--text-primary)',
     fontWeight: '600',
     fontSize: '20px',
   },
   testimonialCourse: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontSize: '16px',
   },
   noReviews: {
@@ -640,14 +636,14 @@ const styles = {
     textAlign: 'center',
   },
   ctaText: {
-    color: '#1f2937',
+    color: 'var(--text-primary)',
     fontSize: '24px',
     maxWidth: '720px',
     margin: '0 auto 24px',
   },
   ctaButton: {
-    background: '#2563eb',
-    color: '#ffffff',
+    background: 'var(--button-bg)',
+    color: 'var(--button-text)',
     fontWeight: '600',
     padding: '14px 32px',
     borderRadius: '9999px',
@@ -657,8 +653,8 @@ const styles = {
   },
   footer: {
     width: '100%',
-    background: 'linear-gradient(to right, #1e40af, #2563eb)',
-    color: '#ffffff',
+    background: 'linear-gradient(to right, var(--mobile-menu-bg), var(--accent))',
+    color: 'var(--button-text)',
     padding: '32px 0',
   },
   footerContent: {
@@ -673,7 +669,7 @@ const styles = {
   icon: {
     width: '32px',
     height: '32px',
-    color: '#2563eb',
+    color: 'var(--accent)',
   },
 };
 

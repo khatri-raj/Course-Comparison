@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ThemeContext } from '../context/ThemeContext';
 
 const Register = () => {
+  const { theme } = useContext(ThemeContext);
   const [formData, setFormData] = useState({ username: '', email: '', password: '', password_confirm: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -47,6 +49,11 @@ const Register = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
+  const inputVariants = {
+    focus: { scale: 1.02, borderColor: 'var(--accent)', transition: { duration: 0.2 } },
+    blur: { scale: 1, borderColor: 'var(--text-secondary)', transition: { duration: 0.2 } },
+  };
+
   return (
     <div style={styles.container}>
       <style jsx>{`
@@ -62,20 +69,30 @@ const Register = () => {
           transition: all 0.3s ease;
         }
         .form-input:focus {
-          border-color: #2563eb;
-          box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
+          border-color: var(--accent);
+          box-shadow: 0 0 8px var(--accent, 0.5);
         }
         .submit-button {
-          transition: background-color 0.3s ease, transform 0.3s ease;
+          transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
         }
         .submit-button:hover {
-          background-color: #1e40af;
+          background-color: var(--accent-hover);
           transform: scale(1.05);
+          box-shadow: 0 4px 12px var(--shadow-hover);
+        }
+        .submit-button:active {
+          transform: scale(0.95);
+        }
+        .link:hover {
+          color: var(--accent-hover);
+          text-decoration: underline;
         }
       `}</style>
-
       <motion.header
-        style={{ ...styles.header, backgroundImage: 'linear-gradient(90deg, #2563eb, #1e40af, #2563eb)' }}
+        style={{
+          ...styles.header,
+          backgroundImage: 'linear-gradient(90deg, var(--accent), var(--mobile-menu-bg), var(--accent))',
+        }}
         className="header-section"
         initial="hidden"
         animate="visible"
@@ -88,7 +105,6 @@ const Register = () => {
           <p style={styles.heroSubtitle}>Create an account to start learning today.</p>
         </div>
       </motion.header>
-
       <main style={styles.main}>
         <section style={styles.section}>
           <motion.div
@@ -127,7 +143,7 @@ const Register = () => {
                 <label htmlFor="username" style={styles.formLabel}>
                   Username
                 </label>
-                <input
+                <motion.input
                   type="text"
                   id="username"
                   name="username"
@@ -137,13 +153,17 @@ const Register = () => {
                   className="form-input"
                   placeholder="Enter your username"
                   required
+                  variants={inputVariants}
+                  whileFocus="focus"
+                  initial="blur"
+                  animate="blur"
                 />
               </div>
               <div style={styles.formGroup}>
                 <label htmlFor="email" style={styles.formLabel}>
                   Email
                 </label>
-                <input
+                <motion.input
                   type="email"
                   id="email"
                   name="email"
@@ -153,13 +173,17 @@ const Register = () => {
                   className="form-input"
                   placeholder="Enter your email"
                   required
+                  variants={inputVariants}
+                  whileFocus="focus"
+                  initial="blur"
+                  animate="blur"
                 />
               </div>
               <div style={styles.formGroup}>
                 <label htmlFor="password" style={styles.formLabel}>
                   Password
                 </label>
-                <input
+                <motion.input
                   type="password"
                   id="password"
                   name="password"
@@ -169,13 +193,17 @@ const Register = () => {
                   className="form-input"
                   placeholder="Enter your password"
                   required
+                  variants={inputVariants}
+                  whileFocus="focus"
+                  initial="blur"
+                  animate="blur"
                 />
               </div>
               <div style={styles.formGroup}>
                 <label htmlFor="password_confirm" style={styles.formLabel}>
                   Confirm Password
                 </label>
-                <input
+                <motion.input
                   type="password"
                   id="password_confirm"
                   name="password_confirm"
@@ -185,6 +213,10 @@ const Register = () => {
                   className="form-input"
                   placeholder="Confirm your password"
                   required
+                  variants={inputVariants}
+                  whileFocus="focus"
+                  initial="blur"
+                  animate="blur"
                 />
               </div>
               <motion.button
@@ -199,14 +231,13 @@ const Register = () => {
             </form>
             <p style={styles.loginLink}>
               Already have an account?{' '}
-              <Link to="/login" style={styles.link}>
+              <Link to="/login" style={styles.link} className="link">
                 Login here
               </Link>
             </p>
           </motion.div>
         </section>
       </main>
-
       <footer style={styles.footer}>
         <div style={styles.footerContent}>
           <p style={styles.footerText}>© 2025 CourseComparison. All rights reserved.</p>
@@ -219,7 +250,7 @@ const Register = () => {
 const styles = {
   container: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -237,22 +268,22 @@ const styles = {
   heroTitle: {
     fontSize: '36px',
     fontWeight: '700',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '8px',
   },
   highlightText: {
-    color: '#facc15',
+    color: 'var(--highlight)',
   },
   heroSubtitle: {
     fontSize: '18px',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '24px',
     maxWidth: '640px',
     marginLeft: 'auto',
     marginRight: 'auto',
   },
   main: {
-    width: '100',
+    width: '100%',
     flexGrow: 1,
     padding: '40px 0',
   },
@@ -264,15 +295,15 @@ const styles = {
   formContainer: {
     maxWidth: '400px',
     margin: '0 auto',
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 6px var(--shadow)',
     padding: '24px',
   },
   sectionTitle: {
     fontSize: '28px',
     fontWeight: '600',
-    color: '#1e40af',
+    color: 'var(--text-primary)',
     marginBottom: '24px',
     textAlign: 'center',
   },
@@ -287,22 +318,22 @@ const styles = {
     gap: '4px',
   },
   formLabel: {
-    color: '#1e40af',
+    color: 'var(--accent)',
     fontWeight: '500',
     fontSize: '14px',
   },
   formInput: {
     padding: '8px 12px',
     borderRadius: '8px',
-    border: '1px solid #d1d5db',
-    background: '#ffffff',
+    border: '1px solid var(--text-secondary)',
+    background: 'var(--card-background)',
     fontSize: '16px',
     outline: 'none',
-    color: '#374151', // Added text color to ensure visibility
+    color: 'var(--text-primary)',
   },
   submitButton: {
-    background: '#2563eb',
-    color: '#ffffff',
+    background: 'var(--button-bg)',
+    color: 'var(--button-text)',
     fontWeight: '600',
     padding: '12px 24px',
     borderRadius: '8px',
@@ -323,17 +354,17 @@ const styles = {
   loginLink: {
     marginTop: '16px',
     textAlign: 'center',
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontSize: '14px',
   },
   link: {
-    color: '#2563eb',
+    color: 'var(--accent)',
     textDecoration: 'underline',
   },
   footer: {
     width: '100%',
-    background: 'linear-gradient(to right, #1e40af, #2563eb)',
-    color: '#ffffff',
+    background: 'linear-gradient(to right, var(--mobile-menu-bg), var(--accent))',
+    color: 'var(--button-text)',
     padding: '24px 0',
   },
   footerContent: {
@@ -343,8 +374,8 @@ const styles = {
     textAlign: 'center',
   },
   footerText: {
-    fontSize: '18px',
+    fontSize: '14px',
   },
 };
 
-export default Register; 
+export default Register;

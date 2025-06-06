@@ -2,9 +2,11 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AuthContext } from '../context/AuthContext';
+import { ThemeContext } from '../context/ThemeContext';
 
 const Login = () => {
   const { login } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -35,8 +37,8 @@ const Login = () => {
   };
 
   const inputVariants = {
-    focus: { scale: 1.02, borderColor: '#2563eb', transition: { duration: 0.2 } },
-    blur: { scale: 1, borderColor: '#d1d5db', transition: { duration: 0.2 } },
+    focus: { scale: 1.02, borderColor: 'var(--accent)', transition: { duration: 0.2 } },
+    blur: { scale: 1, borderColor: 'var(--text-secondary)', transition: { duration: 0.2 } },
   };
 
   return (
@@ -52,33 +54,33 @@ const Login = () => {
         }
         .form-input {
           transition: all 0.3s ease;
-          background: #ffffff;
-          color: #000000;
         }
         .form-input:focus {
-          border-color: #2563eb;
-          box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
+          border-color: var(--accent);
+          box-shadow: 0 0 8px var(--accent, 0.5);
           outline: none;
         }
         .submit-button {
           transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
         }
         .submit-button:hover {
-          background-color: #1e40af;
+          background-color: var(--accent-hover);
           transform: scale(1.05);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 4px 12px var(--shadow-hover);
         }
         .submit-button:active {
           transform: scale(0.95);
         }
         .link:hover {
-          color: #1e40af;
+          color: var(--accent-hover);
           text-decoration: underline;
         }
       `}</style>
-
       <motion.header
-        style={{ ...styles.header, backgroundImage: 'linear-gradient(90deg, #2563eb, #1e40af, #2563eb)' }}
+        style={{
+          ...styles.header,
+          backgroundImage: 'linear-gradient(90deg, var(--accent), var(--mobile-menu-bg), var(--accent))',
+        }}
         className="header-section"
         initial="hidden"
         animate="visible"
@@ -91,7 +93,6 @@ const Login = () => {
           <p style={styles.heroSubtitle}>Access your account to continue learning.</p>
         </div>
       </motion.header>
-
       <main style={styles.main}>
         <section style={styles.section}>
           <motion.div
@@ -125,7 +126,7 @@ const Login = () => {
                   name="username"
                   value={formData.username}
                   onChange={handleInputChange}
-                  style={{ ...styles.formInput, background: '#ffffff', color: '#000000' }}
+                  style={styles.formInput}
                   className="form-input"
                   placeholder="Enter your username"
                   required
@@ -145,7 +146,7 @@ const Login = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  style={{ ...styles.formInput, background: '#ffffff', color: '#000000' }}
+                  style={styles.formInput}
                   className="form-input"
                   placeholder="Enter your password"
                   required
@@ -174,7 +175,6 @@ const Login = () => {
           </motion.div>
         </section>
       </main>
-
       <footer style={styles.footer}>
         <div style={styles.footerContent}>
           <p style={styles.footerText}>© 2025 CourseComparison. All rights reserved.</p>
@@ -187,7 +187,7 @@ const Login = () => {
 const styles = {
   container: {
     minHeight: '100vh',
-    background: '#f0f9ff',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -205,16 +205,16 @@ const styles = {
   heroTitle: {
     fontSize: '36px',
     fontWeight: '700',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     margin: '0 0 8px 0',
   },
   heroSubtitle: {
     fontSize: '18px',
-    color: '#e5e7eb',
+    color: 'var(--button-text)',
     margin: 0,
   },
   highlightText: {
-    color: '#93c5fd',
+    color: 'var(--highlight)',
   },
   main: {
     width: '100%',
@@ -227,17 +227,17 @@ const styles = {
     padding: '0 16px',
   },
   formContainer: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '8px',
     padding: '24px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 2px 8px var(--shadow)',
     maxWidth: '400px',
     margin: '0 auto',
   },
   sectionTitle: {
     fontSize: '24px',
     fontWeight: '600',
-    color: '#000000',
+    color: 'var(--text-primary)',
     marginBottom: '20px',
     textAlign: 'center',
   },
@@ -253,21 +253,21 @@ const styles = {
   formLabel: {
     fontSize: '16px',
     fontWeight: '500',
-    color: '#000000',
+    color: 'var(--text-primary)',
     marginBottom: '8px',
   },
   formInput: {
     padding: '10px 12px',
     borderRadius: '6px',
-    border: '1px solid #d1d5db',
+    border: '1px solid var(--text-secondary)',
     fontSize: '14px',
     outline: 'none',
-    background: '#ffffff',
-    color: '#000000',
+    background: 'var(--card-background)',
+    color: 'var(--text-primary)',
   },
   submitButton: {
-    background: '#2563eb',
-    color: '#ffffff',
+    background: 'var(--button-bg)',
+    color: 'var(--button-text)',
     fontWeight: '600',
     padding: '10px 24px',
     borderRadius: '6px',
@@ -285,17 +285,17 @@ const styles = {
   registerLink: {
     marginTop: '16px',
     textAlign: 'center',
-    color: '#000000',
+    color: 'var(--text-primary)',
     fontSize: '14px',
   },
   link: {
-    color: '#2563eb',
+    color: 'var(--accent)',
     textDecoration: 'underline',
   },
   footer: {
     width: '100%',
-    background: '#1e40af',
-    color: '#ffffff',
+    background: 'linear-gradient(to right, var(--mobile-menu-bg), var(--accent))',
+    color: 'var(--button-text)',
     padding: '20px 0',
   },
   footerContent: {

@@ -3,11 +3,13 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { FaSave } from 'react-icons/fa';
+import { ThemeContext } from '../context/ThemeContext';
+import { FaSave, FaExternalLinkAlt } from 'react-icons/fa';
 
 const CourseDetails = () => {
   const { id } = useParams();
   const { isAuthenticated } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -18,15 +20,12 @@ const CourseDetails = () => {
   useEffect(() => {
     const fetchCourseAndReviews = async () => {
       try {
-        // Fetch course details
         const courseResponse = await axios.get(`http://localhost:8000/api/courses/${id}/`);
         setCourse(courseResponse.data);
 
-        // Fetch reviews for the specific course
         const reviewsResponse = await axios.get(`http://localhost:8000/api/reviews/by-course/${id}/`);
         setReviews(reviewsResponse.data);
 
-        // Fetch saved courses if authenticated
         if (isAuthenticated) {
           const savedResponse = await axios.get('http://localhost:8000/api/saved-courses/', {
             headers: {
@@ -70,6 +69,14 @@ const CourseDetails = () => {
       } else {
         alert('Failed to save course.');
       }
+    }
+  };
+
+  const handleLinkClick = (link) => {
+    if (link) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+    } else {
+      alert('No link available for this course.');
     }
   };
 
@@ -143,19 +150,26 @@ const CourseDetails = () => {
         }
         .course-card:hover, .review-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 8px 16px var(--shadow-hover);
         }
-        .save-button {
-          transition: background-color 0.3s ease, transform 0.3s ease;
+        .save-button, .link-button {
+          transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .save-button:hover {
-          background-color: #16a34a;
+        .save-button:hover:not(:disabled), .link-button:hover:not(:disabled) {
+          background-color: var(--accent-hover);
           transform: scale(1.05);
+          box-shadow: 0 4px 12px var(--shadow-hover);
+        }
+        .save-button:active:not(:disabled), .link-button:active:not(:disabled) {
+          transform: scale(0.95);
         }
       `}</style>
 
       <motion.header
-        style={{ ...styles.header, backgroundImage: 'linear-gradient(90deg, #2563eb, #1e40af, #2563eb)' }}
+        style={{
+          ...styles.header,
+          backgroundImage: 'linear-gradient(90deg, var(--accent), var(--mobile-menu-bg), var(--accent))',
+        }}
         className="header-section"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -189,20 +203,36 @@ const CourseDetails = () => {
               <p style={styles.detailText}>Duration: {course.Duration || 'Not specified'}</p>
               <p style={styles.detailText}>Syllabus: {course.Syllabus || 'No syllabus available'}</p>
             </div>
-            <motion.button
-              style={{
-                ...styles.actionButton,
-                ...styles.saveButton,
-                ...(savedCourseIds.includes(course.id) ? { opacity: 0.5, cursor: 'not-allowed' } : {}),
-              }}
-              className="save-button"
-              onClick={() => handleSaveToDashboard(course)}
-              disabled={savedCourseIds.includes(course.id)}
-              whileHover={savedCourseIds.includes(course.id) ? {} : { scale: 1.1 }}
-              whileTap={savedCourseIds.includes(course.id) ? {} : { scale: 0.9 }}
-            >
-              <FaSave style={styles.buttonIcon} /> {savedCourseIds.includes(course.id) ? 'Saved' : 'Save to Dashboard'}
-            </motion.button>
+            <div style={styles.buttonContainer}>
+              <motion.button
+                style={{
+                  ...styles.actionButton,
+                  ...styles.saveButton,
+                  ...(savedCourseIds.includes(course.id) ? { opacity: 0.5, cursor: 'not-allowed' } : {}),
+                }}
+                className="save-button"
+                onClick={() => handleSaveToDashboard(course)}
+                disabled={savedCourseIds.includes(course.id)}
+                whileHover={savedCourseIds.includes(course.id) ? {} : { scale: 1.05 }}
+                whileTap={savedCourseIds.includes(course.id) ? {} : { scale: 0.95 }}
+              >
+                <FaSave style={styles.buttonIcon} /> {savedCourseIds.includes(course.id) ? 'Saved' : 'Save to Dashboard'}
+              </motion.button>
+              <motion.button
+                style={{
+                  ...styles.actionButton,
+                  ...styles.linkButton,
+                  ...(course.link ? {} : { opacity: 0.5, cursor: 'not-allowed' }),
+                }}
+                className="link-button"
+                onClick={() => handleLinkClick(course.link)}
+                disabled={!course.link}
+                whileHover={course.link ? { scale: 1.05 } : {}}
+                whileTap={course.link ? { scale: 0.95 } : {}}
+              >
+                <FaExternalLinkAlt style={styles.buttonIcon} /> Visit Course
+              </motion.button>
+            </div>
           </motion.div>
 
           <motion.div
@@ -266,13 +296,13 @@ const CourseDetails = () => {
 const styles = {
   container: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     flexDirection: 'column',
   },
   loadingContainer: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background),-secondary))',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -282,19 +312,19 @@ const styles = {
   spinner: {
     width: '24px',
     height: '24px',
-    border: '4px solid #2563eb',
+    border: '4px solid var(--accent)',
     borderTop: '4px solid transparent',
     borderRadius: '50%',
     animation: 'spin 1s linear infinite',
   },
   loadingText: {
-    color: '#2563eb',
+    color: 'var(--accent)',
     fontWeight: '600',
     fontSize: '16px',
   },
   errorContainer: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -318,12 +348,12 @@ const styles = {
   heroTitle: {
     fontSize: '36px',
     fontWeight: '700',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '8px',
   },
   heroSubtitle: {
     fontSize: '18px',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '24px',
     maxWidth: '640px',
     marginLeft: 'auto',
@@ -342,26 +372,26 @@ const styles = {
   sectionTitle: {
     fontSize: '28px',
     fontWeight: '600',
-    color: '#1e40af',
+    color: 'var(--text-primary)',
     marginBottom: '24px',
     textAlign: 'center',
   },
   courseCard: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 6px var(--shadow)',
     padding: '24px',
     marginBottom: '40px',
   },
   courseTitle: {
     fontSize: '24px',
     fontWeight: '600',
-    color: '#1d4ed8',
+    color: 'var(--accent)',
     margin: 0,
   },
   academyName: {
     fontSize: '18px',
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontWeight: '500',
     margin: '8px 0',
   },
@@ -369,7 +399,7 @@ const styles = {
     marginBottom: '16px',
   },
   detailText: {
-    color: '#374151',
+    color: 'var(--text-primary)',
     fontSize: '16px',
     margin: '8px 0',
   },
@@ -380,15 +410,15 @@ const styles = {
     margin: '8px 0',
   },
   ratingStars: {
-    color: '#facc15',
+    color: 'var(--highlight)',
     fontSize: '16px',
   },
   ratingEmptyStars: {
-    color: '#d1d5db',
+    color: 'var(--text-secondary)',
     fontSize: '16px',
   },
   ratingText: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontSize: '14px',
     marginLeft: '4px',
   },
@@ -399,15 +429,24 @@ const styles = {
     cursor: 'pointer',
     fontSize: '14px',
     fontWeight: '600',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '8px',
   },
   saveButton: {
-    background: '#22c55e',
+    background: 'var(--button-bg)',
     padding: '10px 20px',
+  },
+  linkButton: {
+    background: 'var(--button-bg)',
+    padding: '10px 20px',
+  },
+  buttonContainer: {
+    display: 'flex',
+    gap: '16px',
+    justifyContent: 'flex-start',
   },
   buttonIcon: {
     width: '16px',
@@ -422,9 +461,9 @@ const styles = {
     gap: '24px',
   },
   reviewCard: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 6px var(--shadow)',
     padding: '24px',
   },
   reviewHeader: {
@@ -436,27 +475,27 @@ const styles = {
   reviewCourse: {
     fontSize: '18px',
     fontWeight: '600',
-    color: '#1d4ed8',
+    color: 'var(--accent)',
   },
   reviewText: {
-    color: '#374151',
+    color: 'var(--text-primary)',
     fontSize: '16px',
   },
   reviewMeta: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontSize: '14px',
     marginTop: '8px',
   },
   noResults: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     textAlign: 'center',
     fontSize: '18px',
     margin: '24px 0',
   },
   footer: {
     width: '100%',
-    background: 'linear-gradient(to right, #1e40af, #2563eb)',
-    color: '#ffffff',
+    background: 'linear-gradient(to right, var(--mobile-menu-bg), var(--accent))',
+    color: 'var(--button-text)',
     padding: '24px 0',
   },
   footerContent: {

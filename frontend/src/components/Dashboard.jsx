@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaTrash, FaEye } from 'react-icons/fa';
 import { AuthContext } from '../context/AuthContext';
+import { ThemeContext } from '../context/ThemeContext';
 import axios from 'axios';
 
 const Dashboard = () => {
   const { user, isAuthenticated } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext);
   const [savedCourses, setSavedCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -23,7 +25,7 @@ const Dashboard = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
-        console.log('Saved Courses API Response:', response.data); // Debug log
+        console.log('Saved Courses API Response:', response.data);
         setSavedCourses(response.data.map(item => ({
           savedCourseId: item.id,
           id: item.course.id,
@@ -32,7 +34,7 @@ const Dashboard = () => {
           Fees: item.course.Fees,
           Placement_rate: item.course.Placement_rate,
           Rating: item.course.Rating,
-          image: item.course.image, // Include image field
+          image: item.course.image,
         })));
         setLoading(false);
       } catch (err) {
@@ -59,7 +61,7 @@ const Dashboard = () => {
   };
 
   const handleViewDetails = (courseId) => {
-    window.location.href = `/course/${courseId}`; // Force navigation
+    window.location.href = `/course/${courseId}`;
   };
 
   const headerVariants = {
@@ -78,7 +80,7 @@ const Dashboard = () => {
   };
 
   const buttonVariants = {
-    hover: { scale: 1.05, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)' },
+    hover: { scale: 1.05, boxShadow: '0 4px 8px var(--shadow-hover)' },
     tap: { scale: 0.95 },
   };
 
@@ -101,7 +103,7 @@ const Dashboard = () => {
         }
         .course-card:hover, .saved-card:hover {
           transform: translateY(-8px);
-          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 12px 24px var(--shadow-hover);
         }
         .course-image {
           transition: transform 0.5s ease, filter 0.3s ease;
@@ -114,20 +116,22 @@ const Dashboard = () => {
           transition: background-color 0.3s ease, transform 0.3s ease;
         }
         .action-button:hover, .update-button:hover, .view-button:hover {
-          background-color: #1d4ed8;
+          background-color: var(--accent-hover);
           transform: scale(1.05);
         }
         .remove-button:hover {
           background-color: #e11d48;
           transform: scale(1.05);
         }
+        .link:hover {
+          color: var(--accent-hover);
+          text-decoration: underline;
+        }
       `}</style>
-
-      {/* Header */}
       <motion.header
         style={{
           ...styles.header,
-          backgroundImage: 'linear-gradient(90deg, #2563eb, #1e40af, #2563eb)',
+          backgroundImage: 'linear-gradient(90deg, var(--accent), var(--mobile-menu-bg), var(--accent))',
         }}
         className="header-section"
         initial="hidden"
@@ -149,11 +153,8 @@ const Dashboard = () => {
           </Link>
         </div>
       </motion.header>
-
-      {/* Main Content */}
       <main style={styles.main}>
         <section style={styles.section}>
-          {/* Welcome Section */}
           <motion.div
             style={styles.welcomeSection}
             initial={{ opacity: 0, y: 20 }}
@@ -165,8 +166,6 @@ const Dashboard = () => {
               Explore your saved courses and continue your learning journey.
             </p>
           </motion.div>
-
-          {/* Saved Courses */}
           <motion.div
             style={styles.savedSection}
             initial={{ opacity: 0 }}
@@ -186,7 +185,7 @@ const Dashboard = () => {
                 transition={{ duration: 0.5 }}
               >
                 You haven’t saved any courses yet.{' '}
-                <Link to="/compare" style={styles.link}>
+                <Link to="/compare" style={styles.link} className="link">
                   Compare and save courses now!
                 </Link>
               </motion.p>
@@ -253,8 +252,6 @@ const Dashboard = () => {
           </motion.div>
         </section>
       </main>
-
-      {/* Footer */}
       <footer style={styles.footer}>
         <div style={styles.footerContent}>
           <p style={styles.footerText}>© 2025 CourseComparison. All rights reserved.</p>
@@ -267,7 +264,7 @@ const Dashboard = () => {
 const styles = {
   container: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -288,9 +285,9 @@ const styles = {
   heroTitle: {
     fontSize: '48px',
     fontWeight: '700',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     margin: 0,
-    textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+    textShadow: '0 2px 4px var(--shadow)',
   },
   main: {
     width: '100%',
@@ -309,11 +306,11 @@ const styles = {
   sectionTitle: {
     fontSize: '32px',
     fontWeight: '600',
-    color: '#1f2937',
+    color: 'var(--text-primary)',
     marginBottom: '24px',
   },
   welcomeText: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontSize: '20px',
     maxWidth: '720px',
     margin: '0 auto',
@@ -327,9 +324,9 @@ const styles = {
     gap: '24px',
   },
   savedCard: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 12px var(--shadow)',
     padding: '24px',
     display: 'flex',
     flexDirection: 'column',
@@ -346,11 +343,11 @@ const styles = {
   courseTitle: {
     fontSize: '24px',
     fontWeight: '600',
-    color: '#1d4ed8',
+    color: 'var(--accent)',
     margin: 0,
   },
   courseDetail: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontSize: '16px',
     margin: '4px 0',
   },
@@ -361,15 +358,15 @@ const styles = {
     margin: '4px 0',
   },
   ratingStars: {
-    color: '#facc15',
+    color: 'var(--highlight)',
     fontSize: '18px',
   },
   ratingEmptyStars: {
-    color: '#d1d5db',
+    color: 'var(--text-secondary)',
     fontSize: '18px',
   },
   ratingText: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontSize: '16px',
     marginLeft: '8px',
   },
@@ -379,8 +376,8 @@ const styles = {
     marginTop: '16px',
   },
   updateButton: {
-    background: '#2563eb',
-    color: '#ffffff',
+    background: 'var(--button-bg)',
+    color: 'var(--button-text)',
     fontWeight: '600',
     padding: '12px 32px',
     borderRadius: '8px',
@@ -389,8 +386,8 @@ const styles = {
     fontSize: '16px',
   },
   viewButton: {
-    background: '#2563eb',
-    color: '#ffffff',
+    background: 'var(--button-bg)',
+    color: 'var(--button-text)',
     fontWeight: '600',
     padding: '10px 0',
     borderRadius: '8px',
@@ -404,8 +401,8 @@ const styles = {
     flex: 1,
   },
   removeButton: {
-    background: '#f43f5e',
-    color: '#ffffff',
+    background: '#dc3545',
+    color: 'var(--button-text)',
     fontWeight: '600',
     padding: '10px 0',
     borderRadius: '8px',
@@ -423,26 +420,26 @@ const styles = {
     height: '16px',
   },
   noResults: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     textAlign: 'center',
     fontSize: '20px',
     margin: '32px 0',
   },
   errorText: {
-    color: '#e11d48',
+    color: '#dc2626',
     textAlign: 'center',
     fontSize: '20px',
     margin: '32px 0',
   },
   link: {
-    color: '#2563eb',
+    color: 'var(--accent)',
     textDecoration: 'underline',
     fontWeight: '600',
   },
   footer: {
     width: '100%',
-    background: 'linear-gradient(to right, #1e40af, #2563eb)',
-    color: '#ffffff',
+    background: 'linear-gradient(to right, var(--mobile-menu-bg), var(--accent))',
+    color: 'var(--button-text)',
     padding: '32px 0',
   },
   footerContent: {
@@ -452,7 +449,7 @@ const styles = {
     textAlign: 'center',
   },
   footerText: {
-    fontSize: '16px',
+    fontSize: '14px',
   },
 };
 

@@ -1,11 +1,14 @@
+// src/components/Contact.jsx
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AuthContext } from '../context/AuthContext';
+import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
 import { useNavigate } from 'react-router-dom';
 
 const Contact = () => {
   const { isAuthenticated } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext); // Use ThemeContext
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [success, setSuccess] = useState(false);
@@ -44,7 +47,7 @@ const Contact = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Changed to Bearer for SimpleJWT
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -104,26 +107,29 @@ const Contact = () => {
         }
         .info-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 8px 16px var(--shadow-hover);
         }
         .form-input, .form-textarea {
           transition: all 0.3s ease;
         }
         .form-input:focus, .form-textarea:focus {
-          border-color: #2563eb;
-          box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
+          border-color: var(--accent);
+          box-shadow: 0 0 8px var(--accent, 0.5);
         }
         .submit-button {
           transition: background-color 0.3s ease, transform 0.3s ease;
         }
         .submit-button:hover {
-          background-color: #1e40af;
+          background-color: var(--accent-hover);
           transform: scale(1.05);
         }
       `}</style>
 
       <motion.header
-        style={{ ...styles.header, backgroundImage: 'linear-gradient(90deg, #2563eb, #1e40af, #2563eb)' }}
+        style={{
+          ...styles.header,
+          backgroundImage: 'linear-gradient(90deg, var(--accent), var(--mobile-menu-bg), var(--accent))',
+        }}
         className="header-section"
         initial="hidden"
         animate="visible"
@@ -156,7 +162,7 @@ const Contact = () => {
             >
               <h2 style={styles.infoTitle}>Get in Touch</h2>
               <p style={styles.infoText}><strong>Email:</strong> support@coursecomparison.com</p>
-              <p style={styles.infoText}><strong>Phone:</strong> +91 82628 13490 , 96071 35646 </p>
+              <p style={styles.infoText}><strong>Phone:</strong> +91 82628 13490, 96071 35646</p>
               <p style={styles.infoText}><strong>Address:</strong> Park Plaza, above Birla Super Market, Karve Nagar, Pune, Maharashtra 411052</p>
             </motion.div>
             <motion.div
@@ -294,7 +300,7 @@ const Contact = () => {
 const styles = {
   container: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -312,15 +318,15 @@ const styles = {
   heroTitle: {
     fontSize: '36px',
     fontWeight: '700',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '8px',
   },
   highlightText: {
-    color: '#facc15',
+    color: 'var(--highlight)',
   },
   heroSubtitle: {
     fontSize: '18px',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '24px',
     maxWidth: '640px',
     marginLeft: 'auto',
@@ -339,7 +345,7 @@ const styles = {
   sectionTitle: {
     fontSize: '28px',
     fontWeight: '600',
-    color: '#1e40af',
+    color: 'var(--text-primary)',
     marginBottom: '24px',
     textAlign: 'center',
   },
@@ -350,26 +356,26 @@ const styles = {
     marginBottom: '40px',
   },
   infoCard: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 6px var(--shadow)',
     padding: '24px',
   },
   infoTitle: {
     fontSize: '20px',
     fontWeight: '600',
-    color: '#1d4ed8',
+    color: 'var(--accent)',
     marginBottom: '12px',
   },
   infoText: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontSize: '16px',
     marginBottom: '8px',
   },
   formContainer: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 6px var(--shadow)',
     padding: '24px',
   },
   form: {
@@ -383,32 +389,32 @@ const styles = {
     gap: '4px',
   },
   formLabel: {
-    color: '#1e40af',
+    color: 'var(--accent)',
     fontWeight: '500',
     fontSize: '14px',
   },
   formInput: {
     padding: '8px 12px',
     borderRadius: '8px',
-    border: '1px solid #d1d5db',
-    background: '#ffffff',
+    border: '1px solid var(--text-secondary)',
+    background: 'var(--card-background)',
     fontSize: '16px',
     outline: 'none',
-    color: '#374151',
+    color: 'var(--text-primary)',
   },
   formTextarea: {
     padding: '8px 12px',
     borderRadius: '8px',
-    border: '1px solid #d1d5db',
-    background: '#ffffff',
+    border: '1px solid var(--text-secondary)',
+    background: 'var(--card-background)',
     fontSize: '16px',
     outline: 'none',
     resize: 'vertical',
-    color: '#374151',
+    color: 'var(--text-primary)',
   },
   submitButton: {
-    background: '#2563eb',
-    color: '#ffffff',
+    background: 'var(--button-bg)',
+    color: 'var(--button-text)',
     fontWeight: '600',
     padding: '12px 24px',
     borderRadius: '8px',
@@ -428,8 +434,8 @@ const styles = {
   },
   footer: {
     width: '100%',
-    background: 'linear-gradient(to right, #1e40af, #2563eb)',
-    color: '#ffffff',
+    background: 'linear-gradient(to right, var(--mobile-menu-bg), var(--accent))',
+    color: 'var(--button-text)',
     padding: '24px 0',
   },
   footerContent: {

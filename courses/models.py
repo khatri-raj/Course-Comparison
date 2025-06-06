@@ -9,7 +9,9 @@ class Course(models.Model):
     Placement_rate = models.FloatField()
     Rating = models.FloatField()
     Syllabus = models.TextField()
-    image = models.ImageField(upload_to='course_images/', null=True, blank=True)  # New field
+    image = models.ImageField(upload_to='course_images/', null=True, blank=True)
+    link = models.URLField(max_length=300, null=True, blank=True)
+
     def __str__(self):
         return self.Name
     

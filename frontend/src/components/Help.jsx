@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { ThemeContext } from '../context/ThemeContext';
 
 const Help = () => {
+  const { theme } = useContext(ThemeContext);
   const [openIndex, setOpenIndex] = useState(null);
 
   const faqs = [
@@ -64,26 +66,34 @@ const Help = () => {
         }
         .faq-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 8px 16px var(--shadow-hover);
+        }
+        .faq-header {
+          transition: background-color 0.2s ease;
+        }
+        .faq-header:hover {
+          background-color: var(--background-secondary);
         }
         .contact-button {
           transition: background-color 0.3s ease, transform 0.3s ease;
         }
         .contact-button:hover {
-          background-color: #1e40af;
+          background-color: var(--accent-hover);
           transform: scale(1.05);
         }
         .help-section {
-          transition: transform 0.3s ease;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .help-section:hover {
           transform: scale(1.02);
+          box-shadow: 0 8px 16px var(--shadow-hover);
         }
       `}</style>
-
-      {/* Header */}
       <motion.header
-        style={{ ...styles.header, backgroundImage: 'linear-gradient(90deg, #2563eb, #1e40af, #2563eb)' }}
+        style={{
+          ...styles.header,
+          backgroundImage: 'linear-gradient(90deg, var(--accent), var(--mobile-menu-bg), var(--accent))',
+        }}
         className="header-section"
         initial="hidden"
         animate="visible"
@@ -96,11 +106,8 @@ const Help = () => {
           <p style={styles.heroSubtitle}>Find answers to common questions or get in touch with us.</p>
         </div>
       </motion.header>
-
-      {/* Main Content */}
       <main style={styles.main}>
         <section style={styles.section}>
-          {/* FAQs */}
           <motion.div
             style={styles.faqContainer}
             initial={{ opacity: 0 }}
@@ -122,10 +129,13 @@ const Help = () => {
                 >
                   <div
                     style={styles.faqHeader}
+                    className="faq-header"
                     onClick={() => toggleFAQ(index)}
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => e.key === 'Enter' && toggleFAQ(index)}
+                    aria-expanded={openIndex === index}
+                    aria-controls={`faq-answer-${index}`}
                   >
                     <h3 style={styles.faqQuestion}>{faq.question}</h3>
                     {openIndex === index ? (
@@ -137,6 +147,7 @@ const Help = () => {
                   <AnimatePresence>
                     {openIndex === index && (
                       <motion.div
+                        id={`faq-answer-${index}`}
                         style={styles.faqAnswer}
                         initial="hidden"
                         animate="visible"
@@ -151,8 +162,6 @@ const Help = () => {
               ))}
             </div>
           </motion.div>
-
-          {/* Get More Help */}
           <motion.div
             style={styles.helpSection}
             className="help-section"
@@ -177,8 +186,6 @@ const Help = () => {
           </motion.div>
         </section>
       </main>
-
-      {/* Footer */}
       <footer style={styles.footer}>
         <div style={styles.footerContent}>
           <p style={styles.footerText}>© 2025 CourseComparison. All rights reserved.</p>
@@ -191,7 +198,7 @@ const Help = () => {
 const styles = {
   container: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -209,15 +216,15 @@ const styles = {
   heroTitle: {
     fontSize: '36px',
     fontWeight: '700',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '8px',
   },
   highlightText: {
-    color: '#facc15',
+    color: 'var(--highlight)',
   },
   heroSubtitle: {
     fontSize: '18px',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '24px',
     maxWidth: '640px',
     marginLeft: 'auto',
@@ -236,7 +243,7 @@ const styles = {
   sectionTitle: {
     fontSize: '28px',
     fontWeight: '600',
-    color: '#1e40af',
+    color: 'var(--text-primary)',
     marginBottom: '24px',
     textAlign: 'center',
   },
@@ -249,9 +256,9 @@ const styles = {
     gap: '16px',
   },
   faqCard: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 6px var(--shadow)',
     padding: '16px 24px',
     cursor: 'pointer',
   },
@@ -259,35 +266,36 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    padding: '8px 0',
   },
   faqQuestion: {
     fontSize: '18px',
     fontWeight: '600',
-    color: '#1d4ed8',
+    color: 'var(--accent)',
     margin: 0,
   },
   faqIcon: {
     width: '16px',
     height: '16px',
-    color: '#2563eb',
+    color: 'var(--accent)',
   },
   faqAnswer: {
     marginTop: '12px',
     overflow: 'hidden',
   },
   faqAnswerText: {
-    color: '#374151',
+    color: 'var(--text-primary)',
     fontSize: '16px',
   },
   helpSection: {
-    background: 'linear-gradient(135deg, #ffffff, #f0f9ff)',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 6px var(--shadow)',
     padding: '24px',
     textAlign: 'center',
   },
   helpText: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontSize: '16px',
     marginBottom: '24px',
     maxWidth: '640px',
@@ -295,8 +303,8 @@ const styles = {
     marginRight: 'auto',
   },
   contactButton: {
-    background: '#2563eb',
-    color: '#ffffff',
+    background: 'var(--button-bg)',
+    color: 'var(--button-text)',
     fontWeight: '600',
     padding: '12px 24px',
     borderRadius: '8px',
@@ -306,8 +314,8 @@ const styles = {
   },
   footer: {
     width: '100%',
-    background: 'linear-gradient(to right, #1e40af, #2563eb)',
-    color: '#ffffff',
+    background: 'linear-gradient(to right, var(--mobile-menu-bg), var(--accent))',
+    color: 'var(--button-text)',
     padding: '24px 0',
   },
   footerContent: {
@@ -317,7 +325,7 @@ const styles = {
     textAlign: 'center',
   },
   footerText: {
-    fontSize: '18px',
+    fontSize: '14px',
   },
 };
 

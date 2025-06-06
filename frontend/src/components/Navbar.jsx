@@ -1,16 +1,17 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { ThemeContext } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes, FaSun, FaMoon } from 'react-icons/fa';
 
 const Navbar = () => {
   const { isAuthenticated, logout } = useContext(AuthContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Scroll event listener to detect scrolling
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -71,36 +72,28 @@ const Navbar = () => {
           50% { background-position: 100% 50%; }
           100% { background-position: 0% 50%; }
         }
-        }
         .navbar {
-          background: linear-gradient(90deg, #2563eb, #4f46e5, #2563eb);
+          background: linear-gradient(90deg, var(--accent), var(--mobile-menu-bg), var(--accent));
           background-size: 200% 200%;
           animation: gradientShift 10s ease infinite;
         }
         .nav-link {
           position: relative;
-          overflow: hidden;
-          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Improve text visibility */
+          text-shadow: 0 1px 2px var(--shadow);
+          transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
         }
-        .nav-link::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          height: 2px;
-          background: #facc15;
-          transform: translateX(-100%);
+        .nav-link:hover {
+          transform: scale(1.05);
+          background: var(--accent-hover);
+          box-shadow: 0 4px 8px var(--shadow-hover);
+        }
+        .nav-link:active {
+          transform: scale(0.95);
+        }
+        .hamburger-icon, .theme-toggle {
           transition: transform 0.3s ease;
         }
-        .nav-link:hover::after,
-        .nav-link.active::after {
-          transform: translateX(0);
-        }
-        .hamburger-icon {
-          transition: transform 0.3s ease;
-        }
-        .hamburger-icon:hover {
+        .hamburger-icon:hover, .theme-toggle:hover {
           transform: scale(1.2);
         }
         @media (max-width: 768px) {
@@ -114,8 +107,9 @@ const Navbar = () => {
           .mobile-menu {
             display: flex;
             flex-direction: column;
+            align-items: center;
+            width: 100%;
           }
-        }
         }
         @media (min-width: 769px) {
           .hamburger {
@@ -127,7 +121,6 @@ const Navbar = () => {
         }
       `}</style>
       <div style={styles.container}>
-        {/* Logo */}
         <motion.div
           initial="hidden"
           animate="visible"
@@ -138,7 +131,6 @@ const Navbar = () => {
           </Link>
         </motion.div>
 
-        {/* Desktop Navigation Links */}
         <div style={styles.navLinks} className="nav-links">
           {navLinks.map((link, index) => (
             <motion.div
@@ -155,15 +147,28 @@ const Navbar = () => {
                   ...styles.navLink,
                   ...(location.pathname === link.path && !link.onClick ? styles.activeLink : {}),
                 }}
-                className="nav-link active"
+                className="nav-link"
               >
                 {link.label}
               </Link>
             </motion.div>
           ))}
+          <motion.button
+            onClick={toggleTheme}
+            style={styles.themeToggle}
+            className="theme-toggle"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            aria-label="Toggle theme"
+          >
+            {theme === 'light' ? (
+              <FaMoon style={styles.icon} />
+            ) : (
+              <FaSun style={styles.icon} />
+            )}
+          </motion.button>
         </div>
 
-        {/* Mobile Menu Toggle */}
         <motion.div
           style={styles.hamburger}
           className="hamburger"
@@ -179,7 +184,6 @@ const Navbar = () => {
           </button>
         </motion.div>
 
-        {/* Mobile Navigation Menu */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
@@ -214,6 +218,17 @@ const Navbar = () => {
                   </Link>
                 </motion.div>
               ))}
+              <motion.button
+                onClick={() => {
+                  toggleTheme();
+                  setIsMobileMenuOpen(false);
+                }}
+                style={styles.mobileNavLink}
+                className="theme-toggle"
+                aria-label="Toggle theme"
+              >
+                {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+              </motion.button>
             </motion.div>
           )}
         </AnimatePresence>
@@ -227,57 +242,65 @@ const styles = {
     width: '100%',
     position: 'sticky',
     top: 0,
-    zIndex: 1000, // Increased z-index to stay above content
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    background: 'rgba(37, 99, 235, 1)', // Fully opaque fallback
+    zIndex: 1000,
+    boxShadow: '0 2px 4px var(--shadow)',
+    background: 'var(--navbar-bg)',
     transition: 'all 0.3s ease',
+    padding: 0,
   },
   navbarScrolled: {
-    padding: '8px 0', // Slightly reduce padding when scrolled
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Stronger shadow when scrolled
-    background: 'rgba(37, 99, 235, 0.95)', // Slightly translucent when scrolled
+    padding: '8px 0',
+    boxShadow: '0 4px 8px var(--shadow-hover)',
+    background: 'var(--navbar-bg-scrolled)',
   },
   container: {
+    width: '100%',
     maxWidth: '1280px',
     margin: '0 auto',
-    padding: '16px 24px',
+    padding: '16px 24px 16px 24px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: '16px',
+    flexWrap: 'nowrap',
+    boxSizing: 'border-box',
   },
   logo: {
     fontSize: '28px',
     fontWeight: '800',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     textDecoration: 'none',
     letterSpacing: '1px',
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)', // Improve logo visibility
+    textShadow: '0 1px 2px var(--shadow)',
+    flexShrink: 0,
   },
   logoHighlight: {
-    color: '#facc15',
+    color: 'var(--highlight)',
   },
   navLinks: {
     display: 'flex',
-    flexWrap: 'wrap',
-    gap: '12px',
+    flexWrap: 'nowrap',
+    gap: '16px',
     alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginLeft: 'auto',
+    marginRight: 0,
+    paddingRight: 0,
   },
   navLink: {
     padding: '8px 16px',
     borderRadius: '8px',
     fontSize: '16px',
     fontWeight: '600',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     textDecoration: 'none',
     background: 'rgba(255, 255, 255, 0.1)',
     transition: 'background 0.3s ease, color 0.3s ease',
+    whiteSpace: 'nowrap',
   },
   activeLink: {
-    background: '#ffffff',
-    color: '#2563eb',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    background: 'var(--card-background)',
+    color: 'var(--accent)',
+    boxShadow: '0 2px 4px var(--shadow)',
   },
   hamburger: {
     display: 'none',
@@ -291,31 +314,42 @@ const styles = {
   icon: {
     width: '24px',
     height: '24px',
-    color: '#ffffff',
+    color: 'var(--button-text)',
+  },
+  themeToggle: {
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '8px',
+    display: 'flex',
+    alignItems: 'center',
   },
   mobileMenu: {
     width: '100%',
-    background: '#1e40af',
+    background: 'var(--mobile-menu-bg)',
     padding: '16px',
     display: 'none',
     flexDirection: 'column',
     gap: '12px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+    boxShadow: '0 4px 8px var(--shadow)',
+    alignItems: 'center',
   },
   mobileNavLink: {
     padding: '12px 16px',
     fontSize: '18px',
     fontWeight: '500',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     textDecoration: 'none',
     borderRadius: '8px',
     background: 'rgba(255, 255, 255, 0.1)',
-    transition: 'background 0.3s ease',
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)', // Improve mobile link visibility
+    transition: 'background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease',
+    textShadow: '0 1px 2px var(--shadow)',
+    textAlign: 'center',
   },
   activeMobileLink: {
-    background: '#facc15',
-    color: '#1e40af',
+    background: 'var(--highlight)',
+    color: 'var(--mobile-menu-bg)',
   },
 };
+
 export default Navbar;

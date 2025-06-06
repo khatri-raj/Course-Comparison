@@ -1,6 +1,8 @@
+// src/components/Review.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +18,7 @@ const StarRating = ({ rating, setRating }) => {
           key={star}
           style={{
             ...styles.star,
-            color: star <= rating ? '#facc15' : '#d1d5db',
+            color: star <= rating ? 'var(--highlight)' : 'var(--text-secondary)',
             cursor: 'pointer',
           }}
           onClick={() => handleStarClick(star)}
@@ -32,6 +34,7 @@ const StarRating = ({ rating, setRating }) => {
 
 const Review = () => {
   const { isAuthenticated } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext); // Use ThemeContext
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -105,7 +108,7 @@ const Review = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Changed to Bearer for SimpleJWT
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -161,26 +164,29 @@ const Review = () => {
         }
         .review-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 8px 16px var(--shadow-hover);
         }
         .submit-btn {
           transition: background-color 0.3s ease, transform 0.3s ease;
         }
         .submit-btn:hover {
-          background-color: #1d4ed8;
+          background-color: var(--accent-hover);
           transform: scale(1.05);
         }
         .form-input, .form-select, .form-textarea {
           transition: all 0.3s ease;
         }
         .form-input:focus, .form-select:focus, .form-textarea:focus {
-          border-color: #2563eb;
-          box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
+          border-color: var(--accent);
+          box-shadow: 0 0 8px var(--accent, 0.5);
         }
       `}</style>
 
       <motion.header
-        style={styles.header}
+        style={{
+          ...styles.header,
+          backgroundImage: 'linear-gradient(90deg, var(--accent), var(--mobile-menu-bg), var(--accent))',
+        }}
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -366,13 +372,13 @@ const Review = () => {
 const styles = {
   container: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     flexDirection: 'column',
   },
   loadingContainer: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -380,19 +386,19 @@ const styles = {
   spinner: {
     width: '24px',
     height: '24px',
-    border: '4px solid #2563eb',
+    border: '4px solid var(--accent)',
     borderTop: '4px solid transparent',
     borderRadius: '50%',
     animation: 'spin 1s linear infinite',
   },
   loadingText: {
-    color: '#2563eb',
+    color: 'var(--accent)',
     fontWeight: '600',
     fontSize: '16px',
   },
   header: {
     width: '100%',
-    background: '#2563eb',
+    backgroundSize: '200% 200%',
     padding: '24px 0',
   },
   headerContent: {
@@ -404,12 +410,12 @@ const styles = {
   heroTitle: {
     fontSize: '36px',
     fontWeight: '700',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '8px',
   },
   heroSubtitle: {
     fontSize: '18px',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '24px',
   },
   main: {
@@ -425,7 +431,7 @@ const styles = {
   sectionTitle: {
     fontSize: '28px',
     fontWeight: '600',
-    color: '#1e40af',
+    color: 'var(--text-primary)',
     marginBottom: '24px',
     textAlign: 'center',
   },
@@ -438,9 +444,9 @@ const styles = {
     gap: '24px',
   },
   reviewCard: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 6px var(--shadow)',
     padding: '24px',
   },
   reviewHeader: {
@@ -452,33 +458,33 @@ const styles = {
   reviewCourse: {
     fontSize: '18px',
     fontWeight: '600',
-    color: '#1d4ed8',
+    color: 'var(--accent)',
   },
   rating: {
     display: 'flex',
     alignItems: 'center',
   },
   ratingStars: {
-    color: '#facc15',
+    color: 'var(--highlight)',
     fontSize: '16px',
   },
   ratingEmptyStars: {
-    color: '#d1d5db',
+    color: 'var(--text-secondary)',
     fontSize: '16px',
   },
   reviewText: {
-    color: '#374151',
+    color: 'var(--text-primary)',
     fontSize: '16px',
   },
   reviewMeta: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontSize: '14px',
     marginTop: '8px',
   },
   formContainer: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 6px var(--shadow)',
     padding: '24px',
     marginBottom: '40px',
   },
@@ -494,32 +500,32 @@ const styles = {
     marginBottom: '24px',
   },
   formLabel: {
-    color: '#1e40af',
+    color: 'var(--accent)',
     fontWeight: '500',
     fontSize: '14px',
   },
   formSelect: {
     padding: '8px 12px',
     borderRadius: '8px',
-    border: '1px solid #d1d5db',
-    background: '#ffffff',
+    border: '1px solid var(--text-secondary)',
+    background: 'var(--card-background)',
     fontSize: '16px',
     outline: 'none',
-    color: '#1f2937',
+    color: 'var(--text-primary)',
   },
   formTextarea: {
     padding: '8px 12px',
     borderRadius: '8px',
-    border: '1px solid #d1d5db',
-    background: '#ffffff',
+    border: '1px solid var(--text-secondary)',
+    background: 'var(--card-background)',
     fontSize: '16px',
     outline: 'none',
     resize: 'vertical',
-    color: '#1f2937',
+    color: 'var(--text-primary)',
   },
   submitButton: {
-    background: '#2563eb',
-    color: '#ffffff',
+    background: 'var(--button-bg)',
+    color: 'var(--button-text)',
     fontWeight: '600',
     padding: '12px 24px',
     borderRadius: '8px',
@@ -544,8 +550,8 @@ const styles = {
   },
   footer: {
     width: '100%',
-    background: 'linear-gradient(to right, #1e40af, #2563eb)',
-    color: '#ffffff',
+    background: 'linear-gradient(to right, var(--mobile-menu-bg), var(--accent))',
+    color: 'var(--button-text)',
     padding: '24px 0',
   },
   footerContent: {

@@ -1,12 +1,15 @@
+// src/components/CompareCourses.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaEye, FaSave } from 'react-icons/fa';
 import { AuthContext } from '../context/AuthContext';
+import { ThemeContext } from '../context/ThemeContext'; // Import ThemeContext
 import { useNavigate } from 'react-router-dom';
 
 const CompareCourses = () => {
   const { isAuthenticated } = useContext(AuthContext);
+  const { theme } = useContext(ThemeContext); // Use ThemeContext
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
@@ -23,7 +26,7 @@ const CompareCourses = () => {
     const fetchCoursesAndSaved = async () => {
       try {
         const coursesResponse = await axios.get('http://localhost:8000/api/courses/');
-        console.log('Courses API Response:', coursesResponse.data); // Debug API response
+        console.log('Courses API Response:', coursesResponse.data);
         setCourses(coursesResponse.data);
         setFilteredCourses(coursesResponse.data);
 
@@ -160,7 +163,7 @@ const CompareCourses = () => {
         }
         .course-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 8px 16px var(--shadow-hover);
         }
         .course-image {
           transition: filter 0.3s ease;
@@ -172,20 +175,20 @@ const CompareCourses = () => {
           transition: all 0.3s ease;
         }
         .filter-select:focus {
-          border-color: #2563eb;
-          box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
+          border-color: var(--accent);
+          box-shadow: 0 0 8px var(--accent, 0.5);
         }
         .filter-select, .filter-select option {
-          color: #1f2937;
+          color: var(--text-primary);
         }
         .action-button {
           transition: background-color 0.3s ease, transform 0.3s ease;
         }
         .action-button:hover {
           transform: scale(1.05);
-        }
+        Ga
         .view-button:hover {
-          background-color: #1e40af;
+          background-color: var(--accent-hover);
         }
         .save-button:hover {
           background-color: #16a34a;
@@ -193,7 +196,10 @@ const CompareCourses = () => {
       `}</style>
 
       <motion.header
-        style={{ ...styles.header, backgroundImage: 'linear-gradient(90deg, #2563eb, #1e40af, #2563eb)' }}
+        style={{
+          ...styles.header,
+          backgroundImage: 'linear-gradient(90deg, var(--accent), var(--mobile-menu-bg), var(--accent))',
+        }}
         className="header-section"
         initial="hidden"
         animate="visible"
@@ -288,12 +294,12 @@ const CompareCourses = () => {
                   whileTap={{ scale: 0.95 }}
                 >
                   <div
-                style={{
-                  ...styles.courseImage,
-                  backgroundImage: `url(${course.image || 'https://source.unsplash.com/300x140/?course'})`,
-                }}
-                className="course-image"
-              ></div>
+                    style={{
+                      ...styles.courseImage,
+                      backgroundImage: `url(${course.image || 'https://source.unsplash.com/300x140/?course'})`,
+                    }}
+                    className="course-image"
+                  ></div>
                   <h2 style={styles.courseTitle}>{course.Name}</h2>
                   <p style={styles.academyName}>{course.Institute}</p>
                   <div style={styles.courseDetails}>
@@ -349,13 +355,13 @@ const CompareCourses = () => {
 const styles = {
   container: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     flexDirection: 'column',
   },
   loadingContainer: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -365,19 +371,19 @@ const styles = {
   spinner: {
     width: '24px',
     height: '24px',
-    border: '4px solid #2563eb',
+    border: '4px solid var(--accent)',
     borderTop: '4px solid transparent',
     borderRadius: '50%',
     animation: 'spin 1s linear infinite',
   },
   loadingText: {
-    color: '#2563eb',
+    color: 'var(--accent)',
     fontWeight: '600',
     fontSize: '16px',
   },
   errorContainer: {
     minHeight: '100vh',
-    background: 'linear-gradient(to bottom, #f0f9ff, #e5e7eb)',
+    background: 'linear-gradient(to bottom, var(--background), var(--background-secondary))',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -401,15 +407,15 @@ const styles = {
   heroTitle: {
     fontSize: '36px',
     fontWeight: '700',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '8px',
   },
   highlightText: {
-    color: '#facc15',
+    color: 'var(--highlight)',
   },
   heroSubtitle: {
     fontSize: '18px',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     marginBottom: '24px',
     maxWidth: '640px',
     marginLeft: 'auto',
@@ -431,9 +437,9 @@ const styles = {
     gap: '24px',
     marginBottom: '32px',
     flexWrap: 'wrap',
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 6px var(--shadow)',
     padding: '16px',
   },
   filterGroup: {
@@ -442,7 +448,7 @@ const styles = {
     gap: '8px',
   },
   filterLabel: {
-    color: '#1e40af',
+    color: 'var(--accent)',
     fontWeight: '500',
     fontSize: '14px',
   },
@@ -450,10 +456,10 @@ const styles = {
     padding: '8px 16px',
     fontSize: '16px',
     borderRadius: '8px',
-    border: '1px solid #d1d5db',
-    background: '#ffffff',
+    border: '1px solid var(--text-secondary)',
+    background: 'var(--card-background)',
     outline: 'none',
-    color: '#1f2937',
+    color: 'var(--text-primary)',
   },
   courseGrid: {
     display: 'grid',
@@ -461,9 +467,9 @@ const styles = {
     gap: '24px',
   },
   courseCard: {
-    background: '#ffffff',
+    background: 'var(--card-background)',
     borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 6px var(--shadow)',
     padding: '24px',
     display: 'flex',
     flexDirection: 'column',
@@ -480,12 +486,12 @@ const styles = {
   courseTitle: {
     fontSize: '24px',
     fontWeight: '600',
-    color: '#1d4ed8',
+    color: 'var(--accent)',
     margin: 0,
   },
   academyName: {
     fontSize: '18px',
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontWeight: '500',
     margin: '0',
   },
@@ -493,7 +499,7 @@ const styles = {
     flexGrow: 1,
   },
   detailText: {
-    color: '#374151',
+    color: 'var(--text-primary)',
     fontSize: '14px',
     margin: '4px 0',
   },
@@ -504,15 +510,15 @@ const styles = {
     margin: '4px 0',
   },
   ratingStars: {
-    color: '#facc15',
+    color: 'var(--highlight)',
     fontSize: '14px',
   },
   ratingEmptyStars: {
-    color: '#d1d5db',
+    color: 'var(--text-secondary)',
     fontSize: '14px',
   },
   ratingText: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     fontSize: '14px',
     marginLeft: '4px',
   },
@@ -529,32 +535,32 @@ const styles = {
     cursor: 'pointer',
     fontSize: '14px',
     fontWeight: '600',
-    color: '#ffffff',
+    color: 'var(--button-text)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '8px',
   },
   viewButton: {
-    background: '#2563eb',
+    background: 'var(--button-bg)',
   },
   saveButton: {
-    background: '#22c55e',
+    background: '#22c55e', // Kept as a fallback for consistency, can be themed if needed
   },
   buttonIcon: {
     width: '16px',
     height: '16px',
   },
   noResults: {
-    color: '#4b5563',
+    color: 'var(--text-secondary)',
     textAlign: 'center',
     fontSize: '18px',
     margin: '24px 0',
   },
   footer: {
     width: '100%',
-    background: 'linear-gradient(to right, #1e40af, #2563eb)',
-    color: '#ffffff',
+    background: 'linear-gradient(to right, var(--mobile-menu-bg), var(--accent))',
+    color: 'var(--button-text)',
     padding: '24px 0',
   },
   footerContent: {

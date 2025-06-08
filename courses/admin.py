@@ -16,14 +16,14 @@ admin.site.register(User, CustomUserAdmin)
 # ContactMessage Admin with filters
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'subject', 'submitted_at')
+    list_display = ('name', 'email', 'subject', 'submitted_at','message')
     list_filter = ('submitted_at',)  # Add more fields if needed
     search_fields = ('name', 'email', 'subject')
 
 # Review Admin with filters
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('course', 'user', 'rating', 'created_at')
+    list_display = ('course', 'user', 'rating', 'created_at','comment')
     list_filter = ('course', 'user', 'rating', 'created_at')
     search_fields = ('course__Name', 'user__username', 'comment')
 
@@ -44,5 +44,5 @@ class CourseAdmin(admin.ModelAdmin):
 @admin.register(SavedCourse)
 class SavedCourseAdmin(admin.ModelAdmin):
     list_display = ('user', 'course', 'saved_at')
-    list_filter = ('saved_at',)
+    list_filter = ('saved_at','user')
     search_fields = ('user__username', 'course__Name')

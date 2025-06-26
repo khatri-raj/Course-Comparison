@@ -4,8 +4,7 @@ Many students struggle to find the best courses and institutes in Pune. To simpl
 ---
 
 ## 🌐 Live Demo
-🔗 [View Live Application](https://your-live-demo-link.com)
-*(Replace with actual deployment URL if available)*
+🔗 [View Live Application]([https://your-live-demo-link.com](https://course-comparison-frontend.onrender.com/compare))
 
 ---
 ## 📸 Screenshots
